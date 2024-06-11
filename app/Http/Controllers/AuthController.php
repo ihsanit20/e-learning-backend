@@ -13,13 +13,13 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'phone' => 'required|string|max:255|unique:users',
+            'password' => 'required|string|min:6',
         ]);
 
         $user = User::create([
             'name' => $validatedData['name'],
-            'mobile' => $validatedData['mobile'],
+            'phone' => $validatedData['phone'],
             'password' => Hash::make($validatedData['password']),
         ]);
 
@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'mobile' => 'required|string',
+            'phone' => 'required|string',
             'password' => 'required|string',
         ]);
 
@@ -45,17 +45,35 @@ class AuthController extends Controller
         return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
     }
 
-    public function checkMobile(Request $request)
+    public function checkPhone(Request $request)
     {
         $request->validate([
-            'mobile' => 'required|string', // You may add additional validation rules here
+            'phone' => 'required|string', // You may add additional validation rules here
         ]);
 
-        $mobile = $request->input('mobile');
+        $phone = $request->input('phone');
 
-        // Check if the mobile number exists in the database
-        $isRegistered = User::where('mobile', $mobile)->exists();
+        // Check if the phone number exists in the database
+        $isRegistered = User::where('phone', $phone)->exists();
 
         return response()->json(['isRegistered' => $isRegistered]);
     }
+    
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+    
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'date_of_birth' => 'nullable|date',
+            'email' => 'nullable|email|unique:users,email,' . $user->id,
+            'address' => 'nullable|string|max:255',
+        ]);
+    
+        $user->update($request->all());
+    
+        return response()->json(['user' => $user], 200);
+    }
+
 }
