@@ -59,6 +59,25 @@ class AuthController extends Controller
         return response()->json(['isRegistered' => $isRegistered]);
     }
     
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect'], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'Password updated successfully']);
+    }
+
     public function updateProfile(Request $request)
     {
         $user = auth()->user();
@@ -71,9 +90,31 @@ class AuthController extends Controller
             'address' => 'nullable|string|max:255',
         ]);
     
-        $user->update($request->all());
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->date_of_birth = $request->date_of_birth;
+        $user->email = $request->email;
+        $user->address = $request->address;
+    
+        $user->save();
     
         return response()->json(['user' => $user], 200);
     }
 
+    public function uploadProfilePhoto(Request $request)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        $user = auth()->user();
+    
+        $fileName = time().'.'.$request->profile_photo->extension();  
+        $request->profile_photo->move(public_path('storage/profile_photos'), $fileName);
+    
+        $user->profile_photo = 'profile_photos/' . $fileName;
+        $user->save();
+    
+        return response()->json(['user' => $user], 200);
+    }
 }
