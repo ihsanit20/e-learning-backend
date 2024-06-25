@@ -26,6 +26,7 @@ class ModuleController extends Controller
         ]);
 
         $module = Module::create($validated);
+        
         return response()->json($module, 201);
     }
 
