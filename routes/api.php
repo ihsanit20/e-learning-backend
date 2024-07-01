@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\LectureController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,4 +38,10 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/courses/{course}/modules', [ModuleController::class, 'index']);
     Route::apiResource('modules', ModuleController::class)->only(['store', 'show', 'update', 'destroy']);
+
+    Route::get('/modules/{module}/lectures', [LectureController::class, 'index']);
+    Route::post('/modules/{module}/lectures', [LectureController::class, 'store']);
+    Route::get('/lectures/{lecture}', [LectureController::class, 'show']);
+    Route::put('/lectures/{lecture}', [LectureController::class, 'update']);
+    Route::delete('/lectures/{lecture}', [LectureController::class, 'destroy']);
 });
