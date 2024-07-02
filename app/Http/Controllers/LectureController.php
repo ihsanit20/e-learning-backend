@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 
 class LectureController extends Controller
 {
-    public function index()
+    public function index($module_id)
     {
-        $lectures = Lecture::all();
+        $lectures = Lecture::query()
+            ->where('module_id', $module_id)
+            ->get();
+
         return response()->json($lectures);
     }
 
