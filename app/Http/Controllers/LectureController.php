@@ -61,11 +61,11 @@ class LectureController extends Controller
         return response()->json($lecture, 200);
     }
 
-    public function destroy($id)
+    public function destroy($module_id, $lecture_id)
     {
-        $lecture = Lecture::findOrFail($id);
+        $lecture = Lecture::where('module_id', $module_id)->findOrFail($lecture_id);
         $lecture->delete();
-
+    
         return response()->json(null, 204);
     }
 }

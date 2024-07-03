@@ -43,5 +43,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/modules/{module}/lectures', [LectureController::class, 'store']);
     Route::get('/lectures/{lecture}', [LectureController::class, 'show']);
     Route::put('/modules/{module}/lectures/{lecture}', [LectureController::class, 'update']);
-    Route::delete('/lectures/{lecture}', [LectureController::class, 'destroy']);
+    Route::delete('/modules/{module}/lectures/{lecture}', [LectureController::class, 'destroy']);
 });
