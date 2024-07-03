@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lecture;
+use App\Models\Module;
 use Illuminate\Http\Request;
 
 class LectureController extends Controller
@@ -39,8 +40,12 @@ class LectureController extends Controller
         return response()->json($lecture);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Module $module, Lecture $lecture)
     {
+        if($lecture->module_id != $module->id) {
+            return response("Not Found!", 404);
+        }
+
         $request->validate([
             'course_id' => 'exists:courses,id',
             'module_id' => 'exists:modules,id',
@@ -51,7 +56,6 @@ class LectureController extends Controller
             'opening_time' => 'date',
         ]);
 
-        $lecture = Lecture::findOrFail($id);
         $lecture->update($request->all());
 
         return response()->json($lecture, 200);

@@ -20,7 +20,7 @@ class Lecture extends Model
     ];
 
     protected $casts = [
-        'opening_time' => 'datetime',
+        'opening_time' => 'datetime:Y-m-d H:i',
     ];
 
     public function course()
