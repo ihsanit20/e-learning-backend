@@ -19,6 +19,7 @@ class Course extends Model
 
     protected $casts = [
         'materials' => 'array',
+        'price' => 'int',
     ];
 }
 

@@ -54,5 +54,13 @@ class CourseController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function latest()
+    {
+        $courses = Course::orderBy('created_at', 'desc')->take(3)->get();
+        return response()->json($courses);
+    }
+
+    
 }
 
