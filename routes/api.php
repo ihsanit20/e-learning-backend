@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LectureController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\BkashController;
+use App\Http\Controllers\BkashTokenizePaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,4 +51,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/lectures/{lecture}', [LectureController::class, 'show']);
     Route::put('/modules/{module}/lectures/{lecture}', [LectureController::class, 'update']);
     Route::delete('/modules/{module}/lectures/{lecture}', [LectureController::class, 'destroy']);
+
+    Route::post('/purchase', [PurchaseController::class, 'purchaseCourse']);
+    Route::get('/user/courses', [PurchaseController::class, 'getPurchasedCourses']);
+
+    Route::post('/bkash/payment/create', [BkashController::class, 'createPayment']);
+    Route::post('/bkash/payment/execute', [BkashController::class, 'executePayment']);
+
+    Route::prefix('bkash')->group(function () {
+        // Payment Routes for bKash
+        Route::get('/payment', [BkashTokenizePaymentController::class, 'index']);
+        Route::get('/create-payment', [BkashTokenizePaymentController::class, 'createPayment'])->name('bkash-create-payment');
+        Route::get('/callback', [BkashTokenizePaymentController::class, 'callBack'])->name('bkash-callBack');
+    
+        // Search payment
+        Route::get('/search/{trxID}', [BkashTokenizePaymentController::class, 'searchTnx'])->name('bkash-search');
+    
+        // Refund payment routes
+        Route::get('/refund', [BkashTokenizePaymentController::class, 'refund'])->name('bkash-refund');
+        Route::get('/refund/status', [BkashTokenizePaymentController::class, 'refundStatus'])->name('bkash-refund-status');
+    });
 });
