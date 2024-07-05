@@ -32,4 +32,9 @@ class Module extends Model
     {
         return $this->belongsTo(Module::class, 'prerequisite_module_id');
     }
+
+    public function lectures()
+    {
+        return $this->hasMany(Lecture::class);
+    }
 }

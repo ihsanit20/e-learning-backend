@@ -23,6 +23,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('check-phone', [AuthController::class, 'checkPhone']);
 
 Route::get('/courses/latest', [CourseController::class, 'latest']);
+Route::get('/courses/{course}', [CourseController::class, 'show']); // Public route
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -34,7 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/courses', [CourseController::class, 'index']);
     Route::post('/courses', [CourseController::class, 'store']);
-    Route::get('/courses/{course}', [CourseController::class, 'show']);
+    // Remove this line to avoid duplication and conflict
+    // Route::get('/courses/{course}', [CourseController::class, 'show']); 
     Route::put('/courses/{course}', [CourseController::class, 'update']);
     Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
     

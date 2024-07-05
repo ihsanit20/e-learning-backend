@@ -21,6 +21,7 @@ class CourseController extends Controller
             'thumbnail' => 'nullable|string',
             'price' => 'nullable|numeric',
             'materials' => 'nullable|array',
+            'start_date' => 'nullable|date',
         ]);
 
         $course = Course::create($validatedData);
@@ -30,6 +31,7 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
+        $course->load('modules.lectures'); // Eager load modules and lectures
         return response()->json($course);
     }
 
@@ -41,6 +43,7 @@ class CourseController extends Controller
             'thumbnail' => 'nullable|string',
             'price' => 'nullable|numeric',
             'materials' => 'nullable|array',
+            'start_date' => 'nullable|date',
         ]);
 
         $course->update($validatedData);
@@ -60,7 +63,4 @@ class CourseController extends Controller
         $courses = Course::orderBy('created_at', 'desc')->take(3)->get();
         return response()->json($courses);
     }
-
-    
 }
-

@@ -15,11 +15,16 @@ class Course extends Model
         'thumbnail',
         'price',
         'materials',
+        'start_date',
     ];
 
     protected $casts = [
         'materials' => 'array',
         'price' => 'int',
     ];
-}
 
+    public function modules()
+    {
+        return $this->hasMany(Module::class);
+    }
+}
