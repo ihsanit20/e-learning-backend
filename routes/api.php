@@ -57,3 +57,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
     Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
 });
+
+Route::middleware(['auth:sanctum', 'course.purchased'])->get('/courses/{course}', [CourseController::class, 'show']);

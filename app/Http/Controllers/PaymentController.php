@@ -70,7 +70,7 @@ class PaymentController extends Controller
         //     "merchantInvoiceNumber": "MER1231" 
         // }
 
-        if($response->transactionStatus == "Completed") {
+        if(isset($response["transactionStatus"]) && $response["transactionStatus"] == "Completed") {
             $user = $request->user();
 
             // Create the purchase
@@ -79,7 +79,15 @@ class PaymentController extends Controller
                 'course_id' => $course->id,
             ]);
 
-            return response()->json(['message' => 'Course purchased successfully'], 201);
+            return response()->json([
+                'message' => 'Course purchased successfully',
+                'status' => (boolean) (true),
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'Payment failed! Try Again',
+                'status' => (boolean) (false),
+            ], 200);
         }
     }
 }
