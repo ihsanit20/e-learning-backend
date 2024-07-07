@@ -37,11 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/courses', [CourseController::class, 'index']);
     Route::post('/courses', [CourseController::class, 'store']);
-    // Remove this line to avoid duplication and conflict
-    // Route::get('/courses/{course}', [CourseController::class, 'show']); 
     Route::put('/courses/{course}', [CourseController::class, 'update']);
     Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
-    
+
     Route::get('/courses/{course}/modules', [ModuleController::class, 'index']);
     Route::apiResource('modules', ModuleController::class)->only(['store', 'show', 'update', 'destroy']);
 
@@ -56,6 +54,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
     Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
+    
+    // Apply middleware to my courses details route
+    Route::middleware(['auth:sanctum', 'course.purchased'])->group(function () {
+        Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
+    });
 });
-
-Route::middleware(['auth:sanctum', 'course.purchased'])->get('/courses/{course}', [CourseController::class, 'show']);

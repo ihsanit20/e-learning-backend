@@ -63,4 +63,9 @@ class CourseController extends Controller
         $courses = Course::orderBy('created_at', 'desc')->take(3)->get();
         return response()->json($courses);
     }
+
+    public function showPurchasedCourse(Course $course)
+    {
+        return response()->json($course);
+    }
 }
