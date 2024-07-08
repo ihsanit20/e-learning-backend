@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CourseCompletionProgress;
 use App\Models\Lecture;
 use App\Models\Module;
 use Illuminate\Http\Request;
@@ -54,6 +55,7 @@ class LectureController extends Controller
             'type' => 'in:video,virtual_platform',
             'link' => 'url',
             'opening_time' => 'date',
+            'is_completed' => 'boolean', // New validation rule for is_completed
         ]);
 
         $lecture->update($request->all());
@@ -67,5 +69,28 @@ class LectureController extends Controller
         $lecture->delete();
     
         return response()->json(null, 204);
+    }
+
+    public function completeLecture(Request $request, $lectureId)
+    {
+        $userId = $request->user()->id;
+        $courseId = $request->input('course_id');
+        $isCompleted = $request->input('is_completed');
+    
+        $completion = CourseCompletionProgress::updateOrCreate(
+            ['user_id' => $userId, 'course_id' => $courseId, 'lecture_id' => $lectureId],
+            ['is_completed' => $isCompleted]
+        );
+    
+        return response()->json($completion);
+    }
+    
+    public function getLectureCompletionStatus($userId, $lectureId)
+    {
+        $completion = CourseCompletionProgress::where('user_id', $userId)
+                                              ->where('lecture_id', $lectureId)
+                                              ->first();
+    
+        return response()->json(['is_completed' => $completion ? $completion->is_completed : false]);
     }
 }

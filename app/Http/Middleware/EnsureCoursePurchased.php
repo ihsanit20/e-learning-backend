@@ -18,9 +18,9 @@ class EnsureCoursePurchased
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
-        $courseId = $request->route('course');
+        $course = $request->route('course');
 
-        if (!$user->courses()->where('course_id', $courseId)->exists()) {
+        if (!$user->courses()->where('course_id', $course->id)->exists()) {
             return response()->json(['message' => 'You have not purchased this course'], 403);
         }
 
