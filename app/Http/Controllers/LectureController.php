@@ -54,8 +54,7 @@ class LectureController extends Controller
             'description' => 'nullable|string',
             'type' => 'in:video,virtual_platform',
             'link' => 'url',
-            'opening_time' => 'date',
-            'is_completed' => 'boolean', // New validation rule for is_completed
+            'opening_time' => 'date'
         ]);
 
         $lecture->update($request->all());
@@ -85,12 +84,17 @@ class LectureController extends Controller
         return response()->json($completion);
     }
     
-    public function getLectureCompletionStatus($userId, $lectureId)
+    public function getLectureCompletionStatus(Request $request, $userId, $lectureId)
     {
+        // Ensure that the authenticated user is fetching their own completion status
+        if ($request->user()->id != $userId) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $completion = CourseCompletionProgress::where('user_id', $userId)
                                               ->where('lecture_id', $lectureId)
                                               ->first();
-    
+
         return response()->json(['is_completed' => $completion ? $completion->is_completed : false]);
     }
 }
