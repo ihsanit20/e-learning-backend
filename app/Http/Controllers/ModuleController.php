@@ -22,6 +22,7 @@ class ModuleController extends Controller
             'order' => 'nullable|integer',
             'duration' => 'nullable|integer',
             'is_active' => 'boolean',
+            'is_paid' => 'boolean',
             'prerequisite_module_id' => 'nullable|exists:modules,id',
         ]);
 
@@ -43,6 +44,7 @@ class ModuleController extends Controller
             'order' => 'nullable|integer',
             'duration' => 'nullable|integer',
             'is_active' => 'boolean',
+            'is_paid' => 'boolean',
             'prerequisite_module_id' => 'nullable|exists:modules,id',
         ]);
 

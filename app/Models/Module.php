@@ -11,6 +11,7 @@ class Module extends Model
 
     protected $casts = [
         'is_active' => 'bool',
+        'is_paid' => 'bool',
     ];
 
     protected $fillable = [
@@ -21,6 +22,7 @@ class Module extends Model
         'duration',
         'is_active',
         'prerequisite_module_id',
+        'is_paid',
     ];
 
     public function course()
