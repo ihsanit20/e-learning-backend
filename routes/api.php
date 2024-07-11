@@ -51,8 +51,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('lectures/{lecture}/complete', [LectureController::class, 'completeLecture']);
     Route::get('users/{user}/lectures/{lecture}/completion', [LectureController::class, 'getLectureCompletionStatus']);
 
-    Route::post('/purchase', [PurchaseController::class, 'purchaseCourse']);
     Route::get('/user/courses', [PurchaseController::class, 'getPurchasedCourses']);
+
+    Route::get('/transactions', [PurchaseController::class, 'getAllTransactions']);
 
     Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
     Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);

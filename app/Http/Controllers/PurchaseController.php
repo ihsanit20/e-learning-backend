@@ -37,4 +37,14 @@ class PurchaseController extends Controller
         $courses = $user->courses()->with('modules.lectures')->get();
         return response()->json($courses);
     }
+
+    public function getAllTransactions()
+    {    
+        try {
+            $purchases = Purchase::with('user', 'course')->get();
+            return response()->json($purchases);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve transactions.'], 500);
+        }
+    }
 }
