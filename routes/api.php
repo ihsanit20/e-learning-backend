@@ -3,11 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users', [UserController::class, 'getUsers']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
+
     Route::post('/upload-profile-photo', [AuthController::class, 'uploadProfilePhoto']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
@@ -39,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/courses', [CourseController::class, 'store']);
     Route::put('/courses/{course}', [CourseController::class, 'update']);
     Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
+
+    Route::apiResource('category', CategoryController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 
     Route::get('/courses/{course}/modules', [ModuleController::class, 'index']);
     Route::apiResource('modules', ModuleController::class)->only(['store', 'show', 'update', 'destroy']);
@@ -58,7 +67,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
     Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
     
-    // Apply middleware to my courses details route
     Route::middleware(['auth:sanctum', 'course.purchased'])->group(function () {
         Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
     });
