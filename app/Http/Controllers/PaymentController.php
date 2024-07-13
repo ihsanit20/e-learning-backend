@@ -24,7 +24,7 @@ class PaymentController extends Controller
         // return
         $invoice_id = $user->id . '-' . $course->id . '-' . time();
 
-        $response = $this->createPayment($course->price, $invoice_id, "http://localhost:5173/checkout/{$course->id}/callback");
+        $response = $this->createPayment($course->price, $invoice_id, "https://ciademy.com/checkout/{$course->id}/callback");
 
         // { 
         //     "statusCode": "0000", 
