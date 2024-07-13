@@ -56,8 +56,6 @@ class PaymentController extends Controller
             $response = $this->executePayment($paymentID);
       
             if($response->transactionStatus == 'Completed') {
-                $order_id = $response['merchantInvoiceNumber'];
-                $trxID = $response['trxID'];
 
                 $user = $request->user();
 
