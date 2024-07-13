@@ -51,9 +51,8 @@ class PaymentController extends Controller
     public function enroll(Request $request, Course $course)
     {
         $paymentID = $request->input('paymentID');
-        $status = $request->status;
 
-        if($paymentID && $status == 'success') {
+        if($paymentID) {
             $response = $this->executePayment($paymentID);
       
             if($response->transactionStatus == 'Completed') {
@@ -74,7 +73,7 @@ class PaymentController extends Controller
                 ], 201);
             } else {
                 return response()->json([
-                    'message' => 'Payment failed! Try Again',
+                    'message' => 'Payment failed! Try Again!',
                     'status' => (boolean) (false),
                 ], 200);
             }
