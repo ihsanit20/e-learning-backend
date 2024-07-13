@@ -17,7 +17,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'photo',
-        'role', 
+        'role',
     ];
 
     protected $hidden = [
@@ -29,8 +29,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function courses()
+    public function getCourses()
     {
         return $this->belongsToMany(Course::class, 'purchases');
+    }
+
+    public function getPhotoAttribute($value)
+    {
+        return $value ? $value : 'default-image-url'; // Replace 'default-image-url' with a placeholder image if needed
     }
 }

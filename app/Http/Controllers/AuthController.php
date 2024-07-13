@@ -101,20 +101,4 @@ class AuthController extends Controller
         return response()->json(['user' => $user], 200);
     }
 
-    public function uploadProfilePhoto(Request $request)
-    {
-        $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-    
-        $user = auth()->user();
-    
-        $fileName = time().'.'.$request->profile_photo->extension();  
-        $request->profile_photo->move(public_path('storage/profile_photos'), $fileName);
-    
-        $user->profile_photo = 'profile_photos/' . $fileName;
-        $user->save();
-    
-        return response()->json(['user' => $user], 200);
-    }
 }

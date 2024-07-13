@@ -11,14 +11,14 @@ class AddAdditionalFieldsToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('address')->nullable();
             $table->date('date_of_birth')->nullable();
-            $table->string('profile_photo')->nullable();
+            $table->string('photo')->nullable();
         });
     }
 
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['address', 'date_of_birth', 'profile_photo']);
+            $table->dropColumn(['address', 'date_of_birth', 'photo']);
         });
     }
 }
