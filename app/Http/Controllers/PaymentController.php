@@ -51,38 +51,33 @@ class PaymentController extends Controller
     public function enroll(Request $request, Course $course)
     {
         $paymentID = $request->input('paymentID');
+        $status = $request->status;
 
-        // return
-        $response = $this->executePayment($paymentID);
+        if($paymentID && $status == 'success') {
+            $response = $this->executePayment($paymentID);
+      
+            if($response->transactionStatus == 'Completed') {
+                $order_id = $response['merchantInvoiceNumber'];
+                $trxID = $response['trxID'];
 
-        // { 
-        //     "statusCode": "0000", 
-        //     "statusMessage": "Successful", 
-        //     "paymentID": "TR0011ON1565154754797", 
-        //     "payerReference": "01770618575", 
-        //     "customerMsisdn": "01770618575", 
-        //     "trxID": "6H7801QFYM", 
-        //     "amount": "15", 
-        //     "transactionStatus": "Completed", 
-        //     "paymentExecuteTime": "2019-08-07T11:15:56:336 GMT+0600", 
-        //     "currency": "BDT", 
-        //     "intent": "sale", 
-        //     "merchantInvoiceNumber": "MER1231" 
-        // }
+                $user = $request->user();
 
-        if(isset($response["transactionStatus"]) && $response["transactionStatus"] == "Completed") {
-            $user = $request->user();
+                // Create the purchase
+                Purchase::create([
+                    'user_id' => $user->id,
+                    'course_id' => $course->id,
+                ]);
 
-            // Create the purchase
-            Purchase::create([
-                'user_id' => $user->id,
-                'course_id' => $course->id,
-            ]);
-
-            return response()->json([
-                'message' => 'Course purchased successfully',
-                'status' => (boolean) (true),
-            ], 201);
+                return response()->json([
+                    'message' => 'Course purchased successfully',
+                    'status' => (boolean) (true),
+                ], 201);
+            } else {
+                return response()->json([
+                    'message' => 'Payment failed! Try Again',
+                    'status' => (boolean) (false),
+                ], 200);
+            }
         } else {
             return response()->json([
                 'message' => 'Payment failed! Try Again',
