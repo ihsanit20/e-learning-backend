@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
@@ -70,5 +71,23 @@ class CourseController extends Controller
     {
         $course->load('modules.lectures'); // Eager load modules and lectures
         return response()->json($course);
+    }
+
+    public function uploadThumbnail(Request $request, Course $course)
+    {
+        $request->validate([
+            'thumbnail' => 'required|image|max:2048',
+        ]);
+
+        $path = $request->file('thumbnail')->store('ciademy/courses', 's3');
+
+        // Get the full URL of the uploaded file
+        $s3Url = Storage::disk('s3')->url($path);
+
+        // Save the full URL to the course's thumbnail attribute
+        $course->thumbnail = $s3Url;
+        $course->save();
+
+        return response()->json(['message' => 'Thumbnail uploaded successfully', 'path' => $s3Url], 200);
     }
 }

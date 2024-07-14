@@ -53,7 +53,7 @@ class UserController extends Controller
         ]);
 
         $user = $request->user();
-        $path = $request->file('photo')->store('ciademy', 's3');
+        $path = $request->file('photo')->store('ciademy/user', 's3');
 
         // Get the full URL of the uploaded file
         $s3Url = Storage::disk('s3')->url($path);
