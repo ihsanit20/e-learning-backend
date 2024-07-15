@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LectureController;
@@ -63,6 +64,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/{user}/lectures/{lecture}/completion', [LectureController::class, 'getLectureCompletionStatus']);
 
     Route::get('/user/courses', [PurchaseController::class, 'getPurchasedCourses']);
+
+    Route::get('/coupons', [CouponController::class, 'index']);
+    Route::post('/coupons', [CouponController::class, 'store']);
+    Route::put('/coupons/{coupon}', [CouponController::class, 'update']);
+    Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
 
     Route::get('/transactions', [PurchaseController::class, 'getAllTransactions']);
 
