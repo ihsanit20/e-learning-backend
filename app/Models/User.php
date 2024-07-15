@@ -29,7 +29,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getCourses()
+    public function courses()
     {
         return $this->belongsToMany(Course::class, 'purchases');
     }

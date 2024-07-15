@@ -16,7 +16,7 @@ class Course extends Model
         'price',
         'materials',
         'start_date',
-        'course_category', // Add this line
+        'course_category',
     ];
 
     protected $casts = [
