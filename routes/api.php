@@ -30,6 +30,9 @@ Route::post('check-phone', [AuthController::class, 'checkPhone']);
 Route::get('/courses/latest', [CourseController::class, 'latest']);
 Route::get('/courses/{course}', [CourseController::class, 'show']); // Public route
 
+Route::get('category', [CategoryController::class, 'index']);
+Route::get('category/{category}', [CategoryController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -51,6 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/courses/{course}/thumbnail', [CourseController::class, 'uploadThumbnail']);
 
     Route::apiResource('category', CategoryController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+
+    Route::post('category', [CategoryController::class, 'store']);
+    Route::put('category/{category}', [CategoryController::class, 'update']);
+    Route::delete('category/{category}', [CategoryController::class, 'destroy']);
 
     Route::get('/courses/{course}/modules', [ModuleController::class, 'index']);
     Route::apiResource('modules', ModuleController::class)->only(['store', 'show', 'update', 'destroy']);
