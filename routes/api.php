@@ -27,10 +27,11 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('check-phone', [AuthController::class, 'checkPhone']);
 
+Route::get('/courses', [CourseController::class, 'index']);
 Route::get('/courses/latest', [CourseController::class, 'latest']);
 Route::get('/courses/{course}', [CourseController::class, 'show']); // Public route
 
-Route::get('category', [CategoryController::class, 'index']);
+Route::get('/category-list', [CategoryController::class, 'index']);
 Route::get('category/{category}', [CategoryController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -47,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
-    Route::get('/courses', [CourseController::class, 'index']);
+    
     Route::post('/courses', [CourseController::class, 'store']);
     Route::put('/courses/{course}', [CourseController::class, 'update']);
     Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
