@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/coupons', [CouponController::class, 'store']);
     Route::put('/coupons/{coupon}', [CouponController::class, 'update']);
     Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
+    Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
 
     Route::get('/transactions', [PurchaseController::class, 'getAllTransactions']);
 

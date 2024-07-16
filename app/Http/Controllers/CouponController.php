@@ -45,4 +45,15 @@ class CouponController extends Controller
         $coupon->delete();
         return response()->json(null, 204);
     }
+
+    public function showByCode($code)
+    {
+        $coupon = Coupon::where('code', $code)->first();
+
+        if (!$coupon) {
+            return response()->json(['message' => 'Coupon not found'], 404);
+        }
+
+        return response()->json($coupon);
+    }
 }
