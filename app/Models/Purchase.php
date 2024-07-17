@@ -12,7 +12,15 @@ class Purchase extends Model
     protected $fillable = [
         'user_id',
         'course_id',
-        'purchase_date',
+        'paid_amount',
+        'trx_id',
+        'discount_amount',
+        'coupon_code',
+        'response',
+    ];
+
+    protected $casts = [
+        'response' => 'json',
     ];
 
     public function user()

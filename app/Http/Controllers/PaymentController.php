@@ -20,6 +20,8 @@ class PaymentController extends Controller
 
         $discount = 0;
 
+        $params = "";
+
         if($request->coupon_code) {
             // get discount by code
             $coupon = Coupon::where('code', $request->coupon_code)->first();
@@ -29,7 +31,9 @@ class PaymentController extends Controller
                     $discount = ($course->price * $coupon->discount_value) / 100;
                 } else {
                     $discount = $coupon->discount_value;
-                }           
+                }
+                
+                $params = "?coupon_code=" . $request->coupon_code;
             }
         }
 
@@ -41,7 +45,7 @@ class PaymentController extends Controller
    
         $invoice_id = $user->id . '-' . $course->id . '-' . time();
 
-        $callbackUrl = env('FRONTEND_BASE_URL', 'https://ciademy.com') . "/checkout/{$course->id}/callback";
+        $callbackUrl = env('FRONTEND_BASE_URL', 'https://ciademy.com') . "/checkout/{$course->id}/callback" . $params;
 
         $response = $this->createPayment($course->price - $discount, $invoice_id, $callbackUrl);
 
@@ -55,17 +59,35 @@ class PaymentController extends Controller
     {
         $paymentID = $request->input('paymentID');
 
+        $discount = 0;
+
         if($paymentID) {
             $response = $this->executePayment($paymentID);
       
             if($response->transactionStatus == 'Completed') {
-
                 $user = $request->user();
 
+                if($request->coupon_code) {
+                    // get discount by code
+                    $coupon = Coupon::where('code', $request->coupon_code)->first();
+        
+                    if ($coupon) {
+                        if ($coupon->discount_type == 'percentage') {
+                            $discount = ($course->price * $coupon->discount_value) / 100;
+                        } else {
+                            $discount = $coupon->discount_value;
+                        }
+                    }
+                }
 
                 Purchase::create([
-                    'user_id' => $user->id,
-                    'course_id' => $course->id,
+                    'user_id'           => $user->id,
+                    'course_id'         => $course->id,
+                    'paid_amount'       => $response->amount,
+                    'trx_id'            => $response->trxID,
+                    'discount_amount'   => $discount,
+                    'coupon_code'       => $request->coupon_code,
+                    'response'          => $response,
                 ]);
 
                 return response()->json([
