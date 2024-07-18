@@ -55,10 +55,8 @@ class UserController extends Controller
         $user = $request->user();
         $path = $request->file('photo')->store('ciademy/user', 's3');
 
-        // Get the full URL of the uploaded file
         $s3Url = Storage::disk('s3')->url($path);
 
-        // Save the full URL to the user's photo attribute
         $user->photo = $s3Url;
         $user->save();
 

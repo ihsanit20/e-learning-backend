@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\PurchaseController;
@@ -33,6 +34,8 @@ Route::get('/courses/{course}', [CourseController::class, 'show']); // Public ro
 
 Route::get('/category-list', [CategoryController::class, 'index']);
 Route::get('category/{category}', [CategoryController::class, 'show']);
+
+Route::get('/galleries', [GalleryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -83,6 +86,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
     Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
+
+    Route::post('/galleries', [GalleryController::class, 'uploadPhoto']);
+    Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
     
     Route::middleware(['auth:sanctum', 'course.purchased'])->group(function () {
         Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
