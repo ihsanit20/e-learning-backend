@@ -14,13 +14,12 @@ class Course extends Model
         'description',
         'thumbnail',
         'price',
-        'materials',
         'start_date',
         'course_category',
+        'course_type', // Add the new attribute here
     ];
 
     protected $casts = [
-        'materials' => 'array',
         'price' => 'int',
     ];
 

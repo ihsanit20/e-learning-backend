@@ -21,9 +21,9 @@ class CourseController extends Controller
             'description' => 'nullable|string',
             'thumbnail' => 'nullable|string',
             'price' => 'nullable|numeric',
-            'materials' => 'nullable|array',
             'start_date' => 'nullable|date',
-            'course_category' => 'nullable|string|max:255', // Add this line
+            'course_category' => 'nullable|string|max:255',
+            'course_type' => 'required|string|in:Live Course,Recorded Course', // Validation for course_type
         ]);
 
         $course = Course::create($validatedData);
@@ -44,9 +44,9 @@ class CourseController extends Controller
             'description' => 'nullable|string',
             'thumbnail' => 'nullable|string',
             'price' => 'nullable|numeric',
-            'materials' => 'nullable|array',
             'start_date' => 'nullable|date',
-            'course_category' => 'nullable|string|max:255', // Add this line
+            'course_category' => 'nullable|string|max:255',
+            'course_type' => 'required|string|in:Live Course,Recorded Course', // Validation for course_type
         ]);
 
         $course->update($validatedData);
