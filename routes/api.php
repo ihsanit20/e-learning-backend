@@ -12,6 +12,7 @@ use App\Http\Controllers\LectureController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ExamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +52,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
-    
     Route::post('/courses', [CourseController::class, 'store']);
     Route::put('/courses/{course}', [CourseController::class, 'update']);
     Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
@@ -68,7 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/modules/{module}/lectures', [LectureController::class, 'index']);
     Route::post('/modules/{module}/lectures', [LectureController::class, 'store']);
+    
     Route::get('/lectures/{lecture}', [LectureController::class, 'show']);
+
     Route::put('/modules/{module}/lectures/{lecture}', [LectureController::class, 'update']);
     Route::delete('/modules/{module}/lectures/{lecture}', [LectureController::class, 'destroy']);
     Route::post('lectures/{lecture}/complete', [LectureController::class, 'completeLecture']);
@@ -93,4 +95,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(['auth:sanctum', 'course.purchased'])->group(function () {
         Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
     });
+
+    // Exam routes
+    Route::get('/modules/{module}/exams', [ExamController::class, 'index']);
+    Route::post('/modules/{module}/exams', [ExamController::class, 'store']);
+    Route::get('/exams/{exam}', [ExamController::class, 'show']);
+    Route::put('/exams/{exam}', [ExamController::class, 'update']);
+    Route::delete('/modules/{module}/exams/{exam}', [ExamController::class, 'destroy']);
 });

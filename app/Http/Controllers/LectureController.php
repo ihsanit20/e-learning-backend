@@ -86,7 +86,7 @@ class LectureController extends Controller
     
     public function getLectureCompletionStatus(Request $request, $userId, $lectureId)
     {
-        // Ensure that the authenticated user is fetching their own completion status
+        
         if ($request->user()->id != $userId) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
