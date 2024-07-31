@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 
 class ExamController extends Controller
 {
-    public function index($moduleId)
+    public function index($module_id)
     {
-        $exams = Exam::where('module_id', $moduleId)->get();
+        $exams = Exam::query()
+        ->where('module_id', $module_id)
+        ->get();
+
         return response()->json($exams);
     }
 
