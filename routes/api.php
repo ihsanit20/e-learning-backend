@@ -31,7 +31,8 @@ Route::post('check-phone', [AuthController::class, 'checkPhone']);
 
 Route::get('/courses', [CourseController::class, 'index']);
 Route::get('/courses/latest', [CourseController::class, 'latest']);
-Route::get('/courses/{course}', [CourseController::class, 'show']); // Public route
+Route::get('/courses/category/{categoryId}', [CourseController::class, 'coursesByCategory']);
+Route::get('/courses/{course}', [CourseController::class, 'show']);
 
 Route::get('/category-list', [CategoryController::class, 'index']);
 Route::get('category/{category}', [CategoryController::class, 'show']);

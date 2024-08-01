@@ -39,4 +39,9 @@ class Module extends Model
     {
         return $this->hasMany(Lecture::class);
     }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
+    }
 }
