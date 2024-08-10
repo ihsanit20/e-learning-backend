@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 
 class ChapterController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Chapter::with('questions')->get());
+        $subjectId = $request->query('subject_id');
+        $chapters = Chapter::with('questions')
+            ->when($subjectId, function ($query, $subjectId) {
+                return $query->where('subject_id', $subjectId);
+            })
+            ->get();
+
+        return response()->json($chapters);
     }
 
     public function store(Request $request)
