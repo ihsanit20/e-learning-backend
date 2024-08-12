@@ -37,18 +37,35 @@ class PaymentController extends Controller
             }
         }
 
-
         if ($user->courses()->where('course_id', $course->id)->exists()) {
             return response()->json(['message' => 'You have already purchased this course'], 400);
         }
 
+        $payable = $course->price - $discount;
+
+        if($payable <= 0) {
+            Purchase::create([
+                'user_id'           => $user->id,
+                'course_id'         => $course->id,
+                'paid_amount'       => 0,
+                'trx_id'            => null,
+                'discount_amount'   => $discount,
+                'coupon_code'       => $request->coupon_code,
+                'response'          => null,
+            ]);
+
+            return response([
+                'data' => [
+                    'bkashURL' => env('FRONTEND_BASE_URL', 'https://ciademy.com') . '/my/course',
+                ]
+            ]);
+        }
    
         $invoice_id = $user->id . '-' . $course->id . '-' . time();
 
         $callbackUrl = env('FRONTEND_BASE_URL', 'https://ciademy.com') . "/checkout/{$course->id}/callback" . $params;
 
         $response = $this->createPayment($course->price - $discount, $invoice_id, $callbackUrl);
-
 
         return response([
             'data' => $response

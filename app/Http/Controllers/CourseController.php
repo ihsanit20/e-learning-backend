@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,6 +38,17 @@ class CourseController extends Controller
             'modules.lectures',
             'modules.exams',
         ]);
+
+        $course->is_purchased = false;
+
+        if($user = Request()->user('sanctum')) {
+            $course->is_purchased = Purchase::query()
+                ->where([
+                    'user_id'   => $user->id,
+                    'course_id' => $course->id,
+                ])
+                ->exists();
+        }
 
         return response()->json($course);
     }
