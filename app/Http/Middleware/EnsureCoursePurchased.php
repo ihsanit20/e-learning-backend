@@ -17,7 +17,7 @@ class EnsureCoursePurchased
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = $request->user();
+        $user = $request->user('sanctum');
         $course = $request->route('course');
 
         if (!$user->courses()->where('course_id', $course->id)->exists()) {

@@ -49,69 +49,83 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::post('/users', [UserController::class, 'store']);
-    Route::get('/users', [UserController::class, 'getUsers']);
-    Route::put('/users/{user}', [UserController::class, 'update']);
-
     Route::post('/user/photo', [UserController::class, 'uploadPhoto']);
-    
+
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
-
-    Route::post('/courses', [CourseController::class, 'store']);
-    Route::put('/courses/{course}', [CourseController::class, 'update']);
-    Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
-    Route::post('/courses/{course}/thumbnail', [CourseController::class, 'uploadThumbnail']);
-
-    Route::apiResource('category', CategoryController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
-
-    Route::post('category', [CategoryController::class, 'store']);
-    Route::put('category/{category}', [CategoryController::class, 'update']);
-    Route::delete('category/{category}', [CategoryController::class, 'destroy']);
-
-    Route::get('/courses/{course}/modules', [ModuleController::class, 'index']);
-    Route::apiResource('modules', ModuleController::class)->only(['store', 'show', 'update', 'destroy']);
-
-    Route::get('/modules/{module}/lectures', [LectureController::class, 'index']);
-    Route::post('/modules/{module}/lectures', [LectureController::class, 'store']);
-    
-    Route::get('/lectures/{lecture}', [LectureController::class, 'show']);
-
-    Route::put('/modules/{module}/lectures/{lecture}', [LectureController::class, 'update']);
-    Route::delete('/modules/{module}/lectures/{lecture}', [LectureController::class, 'destroy']);
-    Route::post('lectures/{lecture}/complete', [LectureController::class, 'completeLecture']);
-    Route::get('users/{user}/lectures/{lecture}/completion', [LectureController::class, 'getLectureCompletionStatus']);
-
-    Route::get('/user/courses', [PurchaseController::class, 'getPurchasedCourses']);
-
-    Route::get('/coupons', [CouponController::class, 'index']);
-    Route::post('/coupons', [CouponController::class, 'store']);
-    Route::put('/coupons/{coupon}', [CouponController::class, 'update']);
-    Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
-    Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
-
-    Route::get('/transactions', [PurchaseController::class, 'getAllTransactions']);
-
-    Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
-    Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
-
-    Route::post('/galleries', [GalleryController::class, 'uploadPhoto']);
-    Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
-    
+        
     Route::middleware(['auth:sanctum', 'course.purchased'])->group(function () {
         Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
     });
 
-    // Exam routes
-    Route::get('/modules/{module}/exams', [ExamController::class, 'index']);
-    Route::post('/modules/{module}/exams', [ExamController::class, 'store']);
-    Route::get('/exams/{exam}', [ExamController::class, 'show']);
-    Route::put('/exams/{exam}', [ExamController::class, 'update']);
-    Route::delete('/modules/{module}/exams/{exam}', [ExamController::class, 'destroy']);
+    Route::get('/user/courses', [PurchaseController::class, 'getPurchasedCourses']);
+    
+    Route::post('lectures/{lecture}/complete', [LectureController::class, 'completeLecture']);
+    Route::get('users/{user}/lectures/{lecture}/completion', [LectureController::class, 'getLectureCompletionStatus']);
 
-    Route::apiResource('subjects', SubjectController::class);
-    Route::apiResource('chapters', ChapterController::class);
-    Route::apiResource('questions', QuestionController::class);
-    Route::apiResource('mcq-options', McqOptionController::class);
-    Route::apiResource('written-answers', WrittenAnswerController::class);
+    // only developer
+    Route::middleware(['role:developer'])->group(function () {
+
+    });
+    
+    // developer and admin
+    Route::middleware(['role:developer,admin'])->group(function () {
+        Route::post('/users', [UserController::class, 'store']);
+        Route::get('/users', [UserController::class, 'getUsers']);
+        Route::put('/users/{user}', [UserController::class, 'update']);
+    
+        Route::post('/courses', [CourseController::class, 'store']);
+        Route::put('/courses/{course}', [CourseController::class, 'update']);
+        Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
+        Route::post('/courses/{course}/thumbnail', [CourseController::class, 'uploadThumbnail']);
+    
+        Route::apiResource('category', CategoryController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+    
+        Route::post('category', [CategoryController::class, 'store']);
+        Route::put('category/{category}', [CategoryController::class, 'update']);
+        Route::delete('category/{category}', [CategoryController::class, 'destroy']);
+    
+        Route::get('/courses/{course}/modules', [ModuleController::class, 'index']);
+        Route::apiResource('modules', ModuleController::class)->only(['store', 'show', 'update', 'destroy']);
+    
+        Route::get('/modules/{module}/lectures', [LectureController::class, 'index']);
+        Route::post('/modules/{module}/lectures', [LectureController::class, 'store']);
+        
+        Route::get('/lectures/{lecture}', [LectureController::class, 'show']);
+    
+        Route::put('/modules/{module}/lectures/{lecture}', [LectureController::class, 'update']);
+        Route::delete('/modules/{module}/lectures/{lecture}', [LectureController::class, 'destroy']);
+    
+        Route::get('/coupons', [CouponController::class, 'index']);
+        Route::post('/coupons', [CouponController::class, 'store']);
+        Route::put('/coupons/{coupon}', [CouponController::class, 'update']);
+        Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
+        Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
+    
+        Route::get('/transactions', [PurchaseController::class, 'getAllTransactions']);
+    
+        Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
+        Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
+    
+        Route::post('/galleries', [GalleryController::class, 'uploadPhoto']);
+        Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
+    
+        // Exam routes
+        Route::get('/modules/{module}/exams', [ExamController::class, 'index']);
+        Route::post('/modules/{module}/exams', [ExamController::class, 'store']);
+        Route::get('/exams/{exam}', [ExamController::class, 'show']);
+        Route::put('/exams/{exam}', [ExamController::class, 'update']);
+        Route::delete('/modules/{module}/exams/{exam}', [ExamController::class, 'destroy']);
+        
+        Route::apiResource('subjects', SubjectController::class);
+        Route::apiResource('chapters', ChapterController::class);
+        Route::apiResource('questions', QuestionController::class);
+        Route::apiResource('mcq-options', McqOptionController::class);
+        Route::apiResource('written-answers', WrittenAnswerController::class);
+    });
+    
+    // developer, admin and mentor
+    Route::middleware(['role:developer,admin,mentor'])->group(function () {
+
+    });
 });

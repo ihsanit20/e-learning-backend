@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
 
     protected $routeMiddleware = [
         // ...
+        'role' => \App\Http\Middleware\EnsureUserRole::class,
         'course.purchased' => \App\Http\Middleware\EnsureCoursePurchased::class,
     ];
 }
