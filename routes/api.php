@@ -58,6 +58,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
     });
 
+    Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
+    
+    Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
+    Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
+
     Route::get('/user/courses', [PurchaseController::class, 'getPurchasedCourses']);
     
     Route::post('lectures/{lecture}/complete', [LectureController::class, 'completeLecture']);
@@ -100,12 +105,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/coupons', [CouponController::class, 'store']);
         Route::put('/coupons/{coupon}', [CouponController::class, 'update']);
         Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
-        Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
     
         Route::get('/transactions', [PurchaseController::class, 'getAllTransactions']);
-    
-        Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
-        Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
     
         Route::post('/galleries', [GalleryController::class, 'uploadPhoto']);
         Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
