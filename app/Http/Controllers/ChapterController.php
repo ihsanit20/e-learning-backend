@@ -10,7 +10,8 @@ class ChapterController extends Controller
     public function index(Request $request)
     {
         $subjectId = $request->query('subject_id');
-        $chapters = Chapter::with('questions')
+
+        $chapters = Chapter::query()
             ->when($subjectId, function ($query, $subjectId) {
                 return $query->where('subject_id', $subjectId);
             })

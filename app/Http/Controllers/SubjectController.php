@@ -10,7 +10,8 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         $categoryId = $request->query('category_id');
-        $subjects = Subject::with('chapters')
+
+        $subjects = Subject::query()
             ->when($categoryId, function ($query, $categoryId) {
                 return $query->where('category_id', $categoryId);
             })
