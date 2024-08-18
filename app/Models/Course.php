@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,6 +23,13 @@ class Course extends Model
     protected $casts = [
         'price' => 'int',
     ];
+
+    protected function thumbnail(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value ?? url('/images/course.jpg'),
+        );
+    }
 
     public function modules()
     {
