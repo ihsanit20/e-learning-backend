@@ -15,4 +15,16 @@ class Exam extends Model
     {
         return $this->belongsTo(Module::class);
     }
+
+    public function exam_questions()
+    {
+        return $this->hasMany(ExamQuestion::class)
+            ->oldest('exam_questions.priority');
+    }
+
+    public function questions()
+    {
+        return $this->belongsToMany(Question::class, 'exam_questions')
+            ->oldest('exam_questions.priority');
+    }
 }

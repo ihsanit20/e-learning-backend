@@ -36,7 +36,7 @@ Route::post('check-phone', [AuthController::class, 'checkPhone']);
 
 Route::get('/courses', [CourseController::class, 'index']);
 Route::get('/courses/latest', [CourseController::class, 'latest']);
-Route::get('/courses/category/{categoryId}', [CourseController::class, 'coursesByCategory']);
+Route::get('/courses/category/{category}', [CourseController::class, 'coursesByCategory']);
 Route::get('/courses/{course}', [CourseController::class, 'show']);
 
 Route::get('/category-list', [CategoryController::class, 'index']);
@@ -117,6 +117,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/exams/{exam}', [ExamController::class, 'show']);
         Route::put('/exams/{exam}', [ExamController::class, 'update']);
         Route::delete('/modules/{module}/exams/{exam}', [ExamController::class, 'destroy']);
+        Route::post('/exams/{exam}/select-questions/{question}', [ExamController::class, 'selectQuestion']);
+        Route::delete('/exams/{exam}/remove-questions/{question}', [ExamController::class, 'removeQuestion']);
+        
         
         Route::apiResource('subjects', SubjectController::class);
         Route::apiResource('chapters', ChapterController::class);

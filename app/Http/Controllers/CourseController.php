@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class CourseController extends Controller
             'thumbnail' => 'nullable|string',
             'price' => 'nullable|numeric',
             'start_date' => 'nullable|date',
-            'course_category' => 'nullable|string|max:255',
+            'category_id' => 'required',
             'course_type' => 'required|string|in:Live Course,Recorded Course', // Validation for course_type
         ]);
 
@@ -61,7 +62,7 @@ class CourseController extends Controller
             'thumbnail' => 'nullable|string',
             'price' => 'nullable|numeric',
             'start_date' => 'nullable|date',
-            'course_category' => 'nullable|string|max:255',
+            'category_id' => 'required',
             'course_type' => 'required|string|in:Live Course,Recorded Course', // Validation for course_type
         ]);
 
@@ -83,10 +84,10 @@ class CourseController extends Controller
         return response()->json($courses);
     }
 
-    
-    public function coursesByCategory($categoryId)
+    public function coursesByCategory($categoryName)
     {
-        $courses = Course::where('course_category', $categoryId)->get();
+        $category = Category::where('name', $categoryName)->firstOrFail();
+        $courses = Course::where('category_id', $category->id)->get();
         return response()->json($courses);
     }
 
