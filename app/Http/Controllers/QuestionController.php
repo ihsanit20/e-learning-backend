@@ -31,6 +31,7 @@ class QuestionController extends Controller
             'chapter_id' => 'required|exists:chapters,id',
             'type' => 'required|in:MCQ,Written',
             'question_text' => 'required|string',
+            'explanation' => '',
         ]);
 
         $question = Question::create($validated);
@@ -64,7 +65,8 @@ class QuestionController extends Controller
         $validated = $request->validate([
             'chapter_id' => 'sometimes|exists:chapters,id',
             'type' => 'sometimes|in:MCQ,Written',
-            'question_text' => 'sometimes|string',
+            'question_text' => 'required|string',
+            'explanation' => '',
         ]);
 
         $question = Question::findOrFail($id);
