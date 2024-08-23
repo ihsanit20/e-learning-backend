@@ -15,6 +15,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\McqOptionController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\WrittenAnswerController;
@@ -45,6 +46,8 @@ Route::get('category/{category}', [CategoryController::class, 'show']);
 Route::get('/galleries', [GalleryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/upload-photo', [PhotoController::class, 'upload']);
+
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
