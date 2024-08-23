@@ -93,7 +93,11 @@ class CourseController extends Controller
 
     public function showPurchasedCourse(Course $course)
     {
-        $course->load('modules.lectures'); // Eager load modules and lectures
+        $course->load([
+            'modules.lectures',
+            'modules.exams',
+        ]); // Eager load modules and lectures
+
         return response()->json($course);
     }
 

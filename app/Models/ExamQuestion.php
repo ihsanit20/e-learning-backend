@@ -9,5 +9,22 @@ class ExamQuestion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['exam_id', 'question_id', 'priority'];
+    protected $fillable = [
+        'exam_id',
+        'question_id',
+        'priority',
+        'mark',
+        'negative_mark'
+    ];
+
+    public function exam()
+    {
+        return $this->belongsTo(Exam::class);
+    }
+
+    public function question()
+    {
+        return $this->belongsTo(Question::class);
+    }
+
 }

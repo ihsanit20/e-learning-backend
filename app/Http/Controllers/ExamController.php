@@ -36,7 +36,7 @@ class ExamController extends Controller
     {
         $exam = Exam::findOrFail($id);
 
-        $exam->load('questions.mcqOptions');
+        $exam->load('exam_questions.question.mcqOptions');
 
         return response()->json($exam);
     }
@@ -66,7 +66,6 @@ class ExamController extends Controller
     public function selectQuestion(Request $request, Exam $exam, $question_id)
     {
         $question = Question::query()
-            ->with('mcqOptions')
             ->when($request->category_id, function ($query, $category_id) {
                 $query->whereHas('chapter.Subject', function ($query) use ($category_id) {
                     $query->where('category_id', $category_id);
@@ -77,15 +76,25 @@ class ExamController extends Controller
         if($question) {
             $max_priority = (int) (ExamQuestion::where('exam_id', $exam->id)->max('priority') ?? 0);
 
-            ExamQuestion::Create([
-                'exam_id' => $exam->id,
-                'question_id' => $question->id,
-                'priority' => $max_priority + 1 ,
-            ]);
+            $exam_question = ExamQuestion::Create(
+                [
+                    'exam_id' => $exam->id,
+                    'question_id' => $question->id,
+                    'priority' => $max_priority + 1,
+                    'mark' => $request->mark ?? ($question->type == 'MCQ' ? 1 : 10),
+                    'negative_mark' => $request->negative_mark ?? 0,
+                ]
+            );
+        }
+
+        if($question->type == 'MCQ') {
+            $exam_question->load('question.mcqOptions');
+        } else {
+            $exam_question->load('question');
         }
 
         return response()->json([
-            'question' => $question,
+            'exam_question' => $exam_question,
             'option' => 'select'
         ]);
     }
