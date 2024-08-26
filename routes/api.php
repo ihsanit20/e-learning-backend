@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(['auth:sanctum', 'course.purchased'])->group(function () {
         Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
         Route::get('my-courses/{course}/exams/{exam}', [UserCourseExamController::class, 'fetchExamWithQuestion']);
+        Route::post('my-courses/{course}/exams/{exam}', [UserCourseExamController::class, 'submitExamWithQuestion']);
     });
 
     Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
