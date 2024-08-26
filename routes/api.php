@@ -18,6 +18,7 @@ use App\Http\Controllers\McqOptionController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\UserCourseExamController;
 use App\Http\Controllers\WrittenAnswerController;
 
 /*
@@ -59,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
         
     Route::middleware(['auth:sanctum', 'course.purchased'])->group(function () {
         Route::get('/my-courses/{course}', [CourseController::class, 'showPurchasedCourse']);
+        Route::get('my-courses/{course}/exams/{exam}', [UserCourseExamController::class, 'fetchExamWithQuestion']);
     });
 
     Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
