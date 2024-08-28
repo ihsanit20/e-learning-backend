@@ -20,15 +20,17 @@ class ExamController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated_data = $request->validate([
             'module_id' => 'required|exists:modules,id',
             'title' => 'required|string|max:255',
             'duration' => 'required|integer',
             'opening_time' => 'nullable|date',
+            'result_publish_time' => 'nullable|date',
             'link' => 'nullable|string|max:255',
         ]);
 
-        $exam = Exam::create($request->all());
+        $exam = Exam::create($validated_data);
+
         return response()->json($exam, 201);
     }
 
@@ -41,17 +43,18 @@ class ExamController extends Controller
         return response()->json($exam);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Exam $exam)
     {
-        $request->validate([
+        $validated_data = $request->validate([
             'title' => 'required|string|max:255',
             'duration' => 'required|integer',
             'opening_time' => 'nullable|date',
+            'result_publish_time' => 'nullable|date',
             'link' => 'nullable|string|max:255',
         ]);
 
-        $exam = Exam::findOrFail($id);
-        $exam->update($request->all());
+        $exam->update($validated_data);
+
         return response()->json($exam);
     }
 
