@@ -27,7 +27,7 @@ class ExamQuestion extends Model
         return $this->belongsTo(Question::class);
     }
 
-    public function mcqOptions()
+    public function mcq_options()
     {
         return $this->hasMany(McqOption::class, 'question_id', 'question_id');
     }

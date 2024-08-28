@@ -16,13 +16,9 @@ class Question extends Model
         return $this->belongsTo(Chapter::class);
     }
 
-    public function mcqOptions()
+    public function mcq_options()
     {
         return $this->hasMany(McqOption::class);
     }
 
-    public function writtenAnswers()
-    {
-        return $this->hasMany(WrittenAnswer::class);
-    }
 }

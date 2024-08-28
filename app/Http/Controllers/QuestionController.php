@@ -18,7 +18,7 @@ class QuestionController extends Controller
 
         if($request->question_type === 'MCQ') {
             $question->with([
-                'mcqOptions',
+                'mcq_options',
             ]);
         }
 
@@ -47,7 +47,7 @@ class QuestionController extends Controller
                 }
             }
 
-            $question->load('mcqOptions');
+            $question->load('mcq_options');
         }
 
         return response()->json($question, 201);
@@ -55,7 +55,7 @@ class QuestionController extends Controller
 
     public function show($id)
     {
-        $question = Question::with(['mcqOptions', 'writtenAnswers'])->findOrFail($id);
+        $question = Question::with(['mcq_options'])->findOrFail($id);
 
         return response()->json($question);
     }
@@ -98,7 +98,7 @@ class QuestionController extends Controller
                 ->whereNotIn('id', $option_ids)
                 ->delete();
         
-            $question->load('mcqOptions');
+            $question->load('mcq_options');
         }
 
         return response()->json($question);

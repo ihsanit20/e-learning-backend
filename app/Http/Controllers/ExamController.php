@@ -38,7 +38,7 @@ class ExamController extends Controller
     {
         $exam = Exam::findOrFail($id);
 
-        $exam->load('exam_questions.question.mcqOptions');
+        $exam->load('exam_questions.question.mcq_options');
 
         return response()->json($exam);
     }
@@ -91,7 +91,7 @@ class ExamController extends Controller
         }
 
         if($question->type == 'MCQ') {
-            $exam_question->load('question.mcqOptions');
+            $exam_question->load('question.mcq_options');
         } else {
             $exam_question->load('question');
         }

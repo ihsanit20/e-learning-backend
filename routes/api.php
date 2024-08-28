@@ -19,7 +19,6 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserCourseExamController;
-use App\Http\Controllers\WrittenAnswerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,7 +130,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('chapters', ChapterController::class);
         Route::apiResource('questions', QuestionController::class);
         Route::apiResource('mcq-options', McqOptionController::class);
-        Route::apiResource('written-answers', WrittenAnswerController::class);
     });
     
     // developer, admin and mentor

@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Exam;
+use App\Models\ExamQuestion;
+use App\Models\McqOption;
 use App\Models\Module;
+use App\Models\Question;
 use App\Models\UserExam;
 use App\Models\UserMcqAnswer;
 use App\Models\UserWrittenAnswer;
@@ -30,7 +33,7 @@ class UserCourseExamController extends Controller
 
         $questions = $exam->questions()
             ->with([
-                'mcqOptions:id,question_id,option_text'
+                'mcq_options:id,question_id,option_text'
             ])
             ->get();
 
@@ -39,7 +42,7 @@ class UserCourseExamController extends Controller
                 'id'            => $question->id,
                 'type'          => $question->type,
                 'question_text' => $question->question_text,
-                'mcq_options'   => $question->mcqOptions,
+                'mcq_options'   => $question->mcq_options,
                 'user_answers'  => (array) ([])
             ];
         });
@@ -66,9 +69,6 @@ class UserCourseExamController extends Controller
 
         // return
         $mcq_exam_questions = $exam->exam_questions()
-            ->with([
-                'mcqOptions:id,question_id,is_correct'
-            ])
             ->get();
 
         $mcq_correct_mark = 0;
@@ -88,7 +88,7 @@ class UserCourseExamController extends Controller
             }
 
             if($answered_question["type"] == 'MCQ') {
-                $mark = $this->getMark($answered_question, $mcq_exam_questions);
+                $mark = $this->getMark($answered_question, $mcq_exam_questions, $exam);
 
                 if ($mark > 0) {
                     $mcq_correct_mark += $mark;
@@ -121,30 +121,34 @@ class UserCourseExamController extends Controller
         return response()->json($exam);
     }
 
-    private function getMark($answered_question, $mcq_exam_questions)
+    private function getMark($answered_question, $mcq_exam_questions, $exam)
     {
         $mark = 0;
 
         $selected_exam_question = $mcq_exam_questions->where('question_id', $answered_question["id"])->first();
 
-        if($selected_exam_question) {
-            $is_correct = true;
-
-            foreach($selected_exam_question->mcq_options ?? [] as $option) {
-                $is_correct = in_array($option->id, $answered_question["user_answers"]) 
-                    ? $is_correct
-                    : !$is_correct;
-
-                if(!$is_correct) {
-                    break;
-                }
-            }
-
-            $mark = $is_correct
-                ? $selected_exam_question->mark
-                : (- $selected_exam_question->negative_mark);
+        if(!$selected_exam_question) {
+            $selected_exam_question = ExamQuestion::query()
+                ->where([
+                    'exam_id'       => $exam->id,
+                    'question_id'   => $answered_question["id"],
+                ])
+                ->first();
         }
+
+        $correct_option_ids = McqOption::query()
+            ->where('question_id', $answered_question["id"])
+            ->where('is_correct', 1)
+            ->pluck('id')
+            ->toArray();
+
+        $user_selected_option_ids = $answered_question["user_answers"];
+
+        $mark = (!array_diff($correct_option_ids, $user_selected_option_ids) && !array_diff($user_selected_option_ids, $correct_option_ids))
+            ? $selected_exam_question->mark
+            : - $selected_exam_question->negative_mark;
 
         return $mark;
     }
+
 }

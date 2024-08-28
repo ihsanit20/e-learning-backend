@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\CourseCompletionProgress;
 use App\Models\Purchase;
+use App\Models\UserExam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -93,10 +95,54 @@ class CourseController extends Controller
 
     public function showPurchasedCourse(Course $course)
     {
+        $userId = auth('sanctum')->id();
+
         $course->load([
             'modules.lectures',
-            'modules.exams',
-        ]); // Eager load modules and lectures
+            'modules.exams.user_exam',
+        ]);
+
+        // Get all lecture and exam IDs
+        $course_lecture_ids = $course->modules->flatMap(fn($module) => $module->lectures->pluck('id'));
+        $course_exam_ids = $course->modules->flatMap(fn($module) => $module->exams->pluck('id'));
+
+        // Get IDs of completed lectures and exams
+        $completed_lecture_ids = CourseCompletionProgress::query()
+            ->where('user_id', $userId)
+            ->whereIn('lecture_id', $course_lecture_ids)
+            ->pluck('lecture_id')
+            ->toArray();
+
+        $completed_exam_ids = UserExam::query()
+            ->where('user_id', $userId)
+            ->whereIn('exam_id', $course_exam_ids)
+            ->pluck('exam_id')
+            ->toArray();
+
+        // Add is_complete to each lecture and exam
+        foreach ($course->modules as $module) {
+            foreach ($module->lectures as $lecture) {
+                $lecture->is_completed = in_array($lecture->id, $completed_lecture_ids);
+            }
+
+            foreach ($module->exams as $exam) {
+                $exam->is_completed = in_array($exam->id, $completed_exam_ids);
+            }
+        }
+
+        // Calculate total and completed content counts
+        $count_complete_lecture = count($completed_lecture_ids);
+        $count_complete_exam = count($completed_exam_ids);
+
+        $total_contents = count($course_lecture_ids) + count($course_exam_ids);
+        $total_complete_contents = $count_complete_lecture + $count_complete_exam;
+
+        // Add properties to the course object
+        $course->total_contents = $total_contents;
+        $course->total_complete_contents = $total_complete_contents;
+
+        // Calculate and assign progress
+        $course->progress = $total_contents > 0 ? ($total_complete_contents / $total_contents) * 100 : 0;
 
         return response()->json($course);
     }
