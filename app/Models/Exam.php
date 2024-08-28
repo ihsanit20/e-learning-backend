@@ -34,4 +34,15 @@ class Exam extends Model
         return $this->belongsToMany(Question::class, 'exam_questions')
             ->oldest('exam_questions.priority');
     }
+
+    public function user_exams()
+    {
+        return $this->hasMany(UserExam::class);
+    }
+
+    public function user_exam()
+    {
+        return $this->hasOne(UserExam::class)
+            ->where('user_id', auth('sanctum')->id());
+    }
 }

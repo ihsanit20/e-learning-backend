@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_written_answers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('exam_id')->constrained('exams');
+            $table->foreignId('user_exam_id')->constrained('user_exams');
             $table->foreignId('question_id')->constrained('questions');
-            $table->foreignId('user_id')->constrained('users');
             $table->json('answers');
             $table->float('mark')->nullable();
             $table->string('comment')->nullable();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Exam;
 use App\Models\Module;
+use App\Models\UserExam;
 use App\Models\UserMcqAnswer;
 use App\Models\UserWrittenAnswer;
 use Carbon\Carbon;
@@ -70,30 +71,52 @@ class UserCourseExamController extends Controller
             ])
             ->get();
 
+        $mcq_correct_mark = 0;
+        $mcq_negative_mark = 0;
+
+        $user_id = auth('sanctum')->id();
+
+        $user_exam = UserExam::create([
+            'exam_id'       => $exam->id,
+            'user_id'       => $user_id,
+            'is_practice'   => now() > $exam->result_publish_time,
+        ]);
+
         foreach($answered_questions as $answered_question) {
             if(!count($answered_question['user_answers'] ?? [])) {
                 continue;
             }
 
             if($answered_question["type"] == 'MCQ') {
-                // return $this->getMark($answered_question, $mcq_exam_questions);
+                $mark = $this->getMark($answered_question, $mcq_exam_questions);
+
+                if ($mark > 0) {
+                    $mcq_correct_mark += $mark;
+                } elseif ($mark < 0) {
+                    $mcq_negative_mark += (- $mark);
+                }
 
                 UserMcqAnswer::create([
-                    'exam_id'       => $exam->id,
-                    'user_id'       => auth('sanctum')->id(),
+                    'user_exam_id'  => $user_exam->id,
                     'question_id'   => $answered_question["id"],
                     'answers'       => $answered_question["user_answers"],
-                    'mark'          => $this->getMark($answered_question, $mcq_exam_questions),
+                    'mark'          => $mark,
                 ]);
             } else {
                 UserWrittenAnswer::create([
-                    'exam_id'       => $exam->id,
-                    'user_id'       => auth('sanctum')->id(),
+                    'user_exam_id'  => $user_exam->id,
                     'question_id'   => $answered_question["id"],
                     'answers'       => $answered_question["user_answers"],
                 ]);
             }
         }
+        
+        $user_exam->update([
+            'mcq_correct_mark'  => $mcq_correct_mark,
+            'mcq_negative_mark' => $mcq_negative_mark,
+        ]);
+
+        $exam->user_exam = $user_exam;
 
         return response()->json($exam);
     }
@@ -119,7 +142,7 @@ class UserCourseExamController extends Controller
 
             $mark = $is_correct
                 ? $selected_exam_question->mark
-                : $selected_exam_question->negative_mark;
+                : (- $selected_exam_question->negative_mark);
         }
 
         return $mark;
