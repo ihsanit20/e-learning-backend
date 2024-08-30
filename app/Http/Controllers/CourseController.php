@@ -14,7 +14,12 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::query()
+            ->with([
+                'category',
+            ])
+            ->get();
+
         return response()->json($courses);
     }
 

@@ -16,7 +16,7 @@ class Course extends Model
         'thumbnail',
         'price',
         'start_date',
-        'course_category',
+        'category_id',
         'course_type', // Add the new attribute here
     ];
 
@@ -39,5 +39,10 @@ class Course extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'purchases');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
