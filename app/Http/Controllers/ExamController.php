@@ -23,6 +23,7 @@ class ExamController extends Controller
         $validated_data = $request->validate([
             'module_id' => 'required|exists:modules,id',
             'title' => 'required|string|max:255',
+            'type' => 'required|in:MCQ,Written',
             'duration' => 'required|integer',
             'opening_time' => 'nullable|date',
             'result_publish_time' => 'nullable|date',

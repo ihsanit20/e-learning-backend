@@ -147,7 +147,7 @@ class CourseController extends Controller
         $course->total_complete_contents = $total_complete_contents;
 
         // Calculate and assign progress
-        $course->progress = $total_contents > 0 ? ($total_complete_contents / $total_contents) * 100 : 0;
+        $course->progress = round($total_contents > 0 ? ($total_complete_contents / $total_contents) * 100 : 0);
 
         return response()->json($course);
     }

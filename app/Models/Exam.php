@@ -12,6 +12,7 @@ class Exam extends Model
     protected $fillable = [
         'module_id',
         'title',
+        'type',
         'duration',
         'opening_time',
         'result_publish_time',

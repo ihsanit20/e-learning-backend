@@ -55,7 +55,17 @@ class QuestionController extends Controller
 
     public function show($id)
     {
-        $question = Question::with(['mcq_options'])->findOrFail($id);
+        $question = Question::query()
+            ->with(['mcq_options'])
+            ->when(request()->category_id, function ($query, $category_id) {
+                $query->whereHas('chapter.subject', function ($query) use ($category_id) {
+                    $query->where('category_id', $category_id);
+                });
+            })
+            ->when(request()->type, function ($query, $type) {
+                $query->where('type', $type);
+            })
+            ->findOrFail($id);
 
         return response()->json($question);
     }
