@@ -20,4 +20,14 @@ class UserExam extends Model
     {
         return $this->belongsTo(Exam::class);
     }
+
+    public function user_mcq_answers()
+    {
+        return $this->hasMany(UserMcqAnswer::class);
+    }
+
+    public function user_written_answers()
+    {
+        return $this->hasMany(UserWrittenAnswer::class);
+    }
 }

@@ -14,4 +14,9 @@ class UserMcqAnswer extends Model
     protected $casts = [
         'answers' => 'json',
     ];
+
+    public function user_exam()
+    {
+        return $this->belongsTo(UserExam::class);
+    }
 }

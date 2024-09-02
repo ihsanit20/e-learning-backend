@@ -104,8 +104,13 @@ class CourseController extends Controller
 
         $course->load([
             'modules.lectures',
-            'modules.exams.user_exam',
-        ]);
+            'modules.exams' => function ($query) {
+                $query->withCount('exam_questions');
+            },
+            'modules.exams.user_exam' => function ($query) {
+                $query->withCount('user_mcq_answers');
+            },
+        ]);  
 
         // Get all lecture and exam IDs
         $course_lecture_ids = $course->modules->flatMap(fn($module) => $module->lectures->pluck('id'));
@@ -124,20 +129,21 @@ class CourseController extends Controller
             ->pluck('exam_id')
             ->toArray();
 
+        $count_complete_lecture = 0;
+        $count_complete_exam = 0;
+
         // Add is_complete to each lecture and exam
         foreach ($course->modules as $module) {
             foreach ($module->lectures as $lecture) {
                 $lecture->is_completed = in_array($lecture->id, $completed_lecture_ids);
+                $count_complete_lecture += ($lecture->is_completed ? 1 : 0);
             }
 
             foreach ($module->exams as $exam) {
                 $exam->is_completed = in_array($exam->id, $completed_exam_ids);
+                $count_complete_exam += ($exam->is_completed ? 1 : 0);
             }
         }
-
-        // Calculate total and completed content counts
-        $count_complete_lecture = count($completed_lecture_ids);
-        $count_complete_exam = count($completed_exam_ids);
 
         $total_contents = count($course_lecture_ids) + count($course_exam_ids);
         $total_complete_contents = $count_complete_lecture + $count_complete_exam;

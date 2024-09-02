@@ -21,4 +21,13 @@ class Question extends Model
         return $this->hasMany(McqOption::class);
     }
 
+    public function user_mcq_answer()
+    {
+        return $this->hasOne(UserMcqAnswer::class)
+            ->whereHas('user_exam', function ($query) {
+                $query->where('user_id', auth('sanctum')->id());
+            })
+            ;
+    }
+
 }

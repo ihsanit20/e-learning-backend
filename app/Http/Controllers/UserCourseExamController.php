@@ -31,21 +31,39 @@ class UserCourseExamController extends Controller
             ])
             ->firstOrFail();
 
-        $questions = $exam->questions()
+            $questions = $exam->questions()
             ->with([
-                'mcq_options:id,question_id,option_text'
+                'mcq_options:id,question_id,option_text,is_correct',
+                'user_mcq_answer',
             ])
             ->get();
+        
+        $exam->load('user_exam');
+        
+        // Check if the exam has a related user_exam
+        $hasUserExam = $exam->user_exam()->exists();
 
-        $exam->questions = $questions->map(function ($question) {
+        $exam->has_user_exam = $hasUserExam;
+        
+        $exam->questions = $questions->map(function ($question) use ($hasUserExam) {
+            // Determine if `is_correct` should be included in the options
+            $mcqOptions = $question->mcq_options->map(function ($option) use ($hasUserExam) {
+                return [
+                    'id'           => $option->id,
+                    'question_id'  => $option->question_id,
+                    'option_text'  => $option->option_text,
+                    'is_correct'   => $hasUserExam ? $option->is_correct : null, // Include `is_correct` only if there's a user_exam
+                ];
+            });
+        
             return [
                 'id'            => $question->id,
                 'type'          => $question->type,
                 'question_text' => $question->question_text,
-                'mcq_options'   => $question->mcq_options,
-                'user_answers'  => (array) ([])
+                'mcq_options'   => $mcqOptions,
+                'user_answers'  => (array) ($question->user_mcq_answer->answers ?? []),
             ];
-        });
+        });        
 
         return response()->json($exam);
     }
