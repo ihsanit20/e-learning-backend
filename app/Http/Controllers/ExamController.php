@@ -117,5 +117,28 @@ class ExamController extends Controller
             'option' => 'remove'
         ]);
     }
+
+    public function changeQuestionMark(Request $request, Exam $exam)
+    {
+        $request->validate([
+            'question_ids'  => 'required|array',
+            'mark'          => 'required|numeric',
+            'negative_mark' => 'required|numeric',
+        ]);
+
+        $question_ids = $request->question_ids;
+
+        $response = ExamQuestion::query()
+            ->where('exam_id', $exam->id)
+            ->whereIn('question_id', $question_ids)
+            ->update([
+                'mark'          => $request->mark,
+                'negative_mark' => $request->negative_mark,
+            ]);
+
+        return response()->json([
+            'response' => $response,
+        ]);
+    }
 }
 
