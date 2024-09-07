@@ -40,19 +40,36 @@ class UserCourseExamController extends Controller
         
         $exam->load('user_exam');
         
-        // Check if the exam has a related user_exam
-        $hasUserExam = $exam->user_exam()->exists();
+        $has_user_exam = !!$exam->user_exam;
 
-        $exam->has_user_exam = $hasUserExam;
+        if($has_user_exam && !$exam->is_practice) {
+            if($exam->user_exam->obtained_mark == null) {
+                $exam->user_exam()->update([
+                    'obtained_mark' => ($exam->user_exam->mcq_correct_mark ?? 0) 
+                        - ($exam->user_exam->mcq_negative_mark ?? 0) 
+                        + ($exam->user_exam->written_mark ?? 0)
+                ]);
+            }
+
+            $upper_position = $exam->user_exams()
+                ->where('obtained_mark', '>', $exam->user_exam->obtained_mark)
+                ->where('is_practice', 0)
+                ->latest('obtained_mark')
+                ->count();
+
+            $exam->user_exam->position = $upper_position + 1;
+        }
+
+        $exam->has_user_exam = $has_user_exam;
         
-        $exam->questions = $questions->map(function ($question) use ($hasUserExam) {
+        $exam->questions = $questions->map(function ($question) use ($has_user_exam) {
             // Determine if `is_correct` should be included in the options
-            $mcqOptions = $question->mcq_options->map(function ($option) use ($hasUserExam) {
+            $mcqOptions = $question->mcq_options->map(function ($option) use ($has_user_exam) {
                 return [
                     'id'           => $option->id,
                     'question_id'  => $option->question_id,
                     'option_text'  => $option->option_text,
-                    'is_correct'   => $hasUserExam ? $option->is_correct : null, // Include `is_correct` only if there's a user_exam
+                    'is_correct'   => $has_user_exam ? $option->is_correct : null, // Include `is_correct` only if there's a user_exam
                 ];
             });
         
@@ -97,7 +114,7 @@ class UserCourseExamController extends Controller
         $user_exam = UserExam::create([
             'exam_id'       => $exam->id,
             'user_id'       => $user_id,
-            'is_practice'   => now() > $exam->result_publish_time,
+            'is_practice'   => Carbon::now() > Carbon::make($exam->result_publish_time),
         ]);
 
         foreach($answered_questions as $answered_question) {
@@ -132,6 +149,7 @@ class UserCourseExamController extends Controller
         $user_exam->update([
             'mcq_correct_mark'  => $mcq_correct_mark,
             'mcq_negative_mark' => $mcq_negative_mark,
+            'obtained_mark'     => $mcq_negative_mark - $mcq_negative_mark,
         ]);
 
         $exam->user_exam = $user_exam;
