@@ -149,7 +149,7 @@ class UserCourseExamController extends Controller
         $user_exam->update([
             'mcq_correct_mark'  => $mcq_correct_mark,
             'mcq_negative_mark' => $mcq_negative_mark,
-            'obtained_mark'     => $mcq_negative_mark - $mcq_negative_mark,
+            'obtained_mark'     => $mcq_correct_mark - $mcq_negative_mark,
         ]);
 
         $exam->user_exam = $user_exam;
