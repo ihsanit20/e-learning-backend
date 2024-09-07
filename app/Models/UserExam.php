@@ -11,6 +11,10 @@ class UserExam extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'is_practice' => 'boolean',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
