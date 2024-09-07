@@ -70,11 +70,11 @@ class ExamController extends Controller
     public function selectQuestion(Request $request, Exam $exam, $question_id)
     {
         $question = Question::query()
-            //->when($request->category_id, function ($query, $category_id) {
-            //    $query->whereHas('chapter.Subject', function ($query) use ($category_id) {
-            //        $query->where('category_id', $category_id);
-            //    });
-            //})
+            ->when($request->category_id, function ($query, $category_id) {
+                $query->whereHas('chapter.Subject', function ($query) use ($category_id) {
+                    $query->where('category_id', $category_id);
+                });
+            })
             ->find($question_id);
 
         if($question) {
