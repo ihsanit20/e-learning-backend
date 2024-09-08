@@ -125,6 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/exams/{exam}/select-questions/{question}', [ExamController::class, 'selectQuestion']);
         Route::delete('/exams/{exam}/remove-questions/{question}', [ExamController::class, 'removeQuestion']);
         Route::put('/exams/{exam}/change-question-mark', [ExamController::class, 'changeQuestionMark']);
+        Route::get('/exams/{exam}/results', [ExamController::class, 'results']);
         
         Route::apiResource('subjects', SubjectController::class);
         Route::apiResource('chapters', ChapterController::class);

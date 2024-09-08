@@ -140,5 +140,18 @@ class ExamController extends Controller
             'response' => $response,
         ]);
     }
+
+    public function results(Exam $exam)
+    {
+        $user_exams = $exam->user_exams()
+            ->with([
+                'user:id,name,phone'
+            ])
+            ->latest('obtained_mark')
+            ->where('is_practice', 0)
+            ->paginate();
+
+        return response()->json(compact('user_exams'));
+    }
 }
 
