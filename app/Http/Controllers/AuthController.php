@@ -132,23 +132,23 @@ class AuthController extends Controller
         ]);
 
         // SMS API দিয়ে OTP পাঠানো
-        $apiKey = 'J9wn09n3HqS72xl5prVi';
+        $apiKey = env('SMS_API_KEY');
         $senderId = '8809617620253';
-        $message = "Your OTP is $otp";
+        $message = "Your Ciademy OTP is $otp";
 
-        $response = Http::get('http://bulksmsbd.net/api/smsapi', [
-            'api_key' => $apiKey,
-            'senderid' => $senderId,
-            'number' => $phone,
-            'message' => $message,
-            'type' => 'text'
+        $response = Http::post('http://bulksmsbd.net/api/smsapi', [
+            'api_key'   => $apiKey,
+            'senderid'  => $senderId,
+            'number'    => $phone,
+            'message'   => $message,
         ]);
 
-        if ($response->successful()) {
-            return response()->json(['message' => 'OTP sent successfully']);
-        } else {
-            return response()->json(['message' => 'Failed to send OTP'], 500);
-        }
+        return response()->json([
+            'message'   => $response->successful()
+                ? 'OTP sent successfully'
+                : 'Failed to send OTP',
+            'response'  => $response->object(),
+        ]);
     }
 
     public function verifyOtp(Request $request)
