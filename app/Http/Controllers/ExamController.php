@@ -12,6 +12,7 @@ class ExamController extends Controller
     public function index($module_id)
     {
         $exams = Exam::query()
+            ->withCount('user_exams')
             ->where('module_id', $module_id)
             ->get();
 
@@ -150,8 +151,12 @@ class ExamController extends Controller
             ->latest('obtained_mark')
             ->where('is_practice', 0)
             ->paginate();
+            // ->get();
 
-        return response()->json(compact('user_exams'));
+        return response()->json(compact(
+            'exam',
+            'user_exams',
+        ));
     }
 }
 

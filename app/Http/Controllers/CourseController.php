@@ -44,7 +44,9 @@ class CourseController extends Controller
     {
         $course->load([
             'modules.lectures',
-            'modules.exams',
+            'modules.exams' => function ($query) {
+                $query->withCount('user_exams');
+            },
         ]);
 
         $course->is_purchased = false;
