@@ -37,6 +37,7 @@ Route::post('check-phone', [AuthController::class, 'checkPhone']);
 
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::get('/courses', [CourseController::class, 'index']);
 Route::get('/courses/latest', [CourseController::class, 'latest']);
