@@ -155,7 +155,7 @@ class AuthController extends Controller
             'expires_at' => $expiresAt,
         ]);
 
-        $apiKey = env('SMS_API_KEY');
+        $apiKey = 'J9wn09n3HqS72xI5prVi';
         $senderId = '8809617620253';
         $message = "Your Ciademy OTP is $otp";
     
@@ -219,5 +219,4 @@ class AuthController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
     }
-
 }
