@@ -192,7 +192,6 @@ class AuthController extends Controller
                         ->first();
 
         if ($otpRecord) {
-            $otpRecord->delete();
             return response()->json(['message' => 'OTP verified successfully']);
         } else {
             return response()->json(['message' => 'Invalid OTP or it has expired'], 400);
@@ -202,18 +201,28 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
+            'otp' => 'required|string|max:4',
             'phone' => 'required|string|max:255',
             'new_password' => 'required|string|min:6|confirmed',
         ]);
-    
+
+        $otp = $request->input('otp');
         $phone = $request->input('phone');
         $newPassword = $request->input('new_password');
 
+        $otpRecord = Otp::query()
+            ->where('phone', $phone)
+            ->where('otp', $otp)
+            ->where('expires_at', '>', now())
+            ->first();
+            
         $user = User::where('phone', $phone)->first();
-        
-        if ($user) {
+
+        if ($user && $otpRecord) {
             $user->password = Hash::make($newPassword);
             $user->save();
+
+            $otpRecord->delete();
     
             return response()->json(['message' => 'Password reset successfully']);
         } else {
