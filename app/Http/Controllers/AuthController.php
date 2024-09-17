@@ -155,8 +155,9 @@ class AuthController extends Controller
             'expires_at' => $expiresAt,
         ]);
 
-        $apiKey = 'J9wn09n3HqS72xI5prVi';
-        $senderId = '8809617620253';
+        $apiKey = env('BULKSMS_API_KEY');
+        $senderId = env('BULKSMS_SENDER_ID');
+
         $message = "Your Ciademy OTP is $otp";
     
         $response = Http::post('http://bulksmsbd.net/api/smsapi', [
