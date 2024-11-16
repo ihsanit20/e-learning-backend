@@ -15,6 +15,7 @@ return new class extends Migration
             $table->enum('code_type', ['general', 'affiliate'])->default('general')->after('code');
             $table->foreignId('affiliate_user_id')->nullable()->after('code_type')->constrained('users');
             $table->json('course_ids')->nullable()->after('affiliate_user_id');
+            $table->integer('commission_value')->default(0)->after('discount_value');
         });
     }
 
@@ -24,6 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('coupons', function (Blueprint $table) {
+            $table->dropColumn('commission_value');
             $table->dropColumn('course_ids');
             $table->dropForeign(['affiliate_user_id']);
             $table->dropColumn('affiliate_user_id');

@@ -30,6 +30,7 @@ class CouponController extends Controller
             'code'              => $request->code,
             'code_type'         => $request->code_type,
             'affiliate_user_id' => $request->code_type == 'affiliate' ? $request->affiliate_user_id : null,
+            'commission_value'  => $request->code_type == 'affiliate' ? $request->commission_value : 0,
             'discount_type'     => $request->discount_type,
             'discount_value'    => $request->discount_value,
             'valid_from'        => $request->valid_from,
@@ -52,6 +53,7 @@ class CouponController extends Controller
         $coupon->update([
             'discount_type'     => $request->discount_type,
             'discount_value'    => $request->discount_value,
+            'commission_value'  => $coupon->code_type == 'affiliate' ? $request->commission_value : 0,
             'valid_from'        => $request->valid_from,
             'valid_until'       => $request->valid_until,
         ]);

@@ -15,6 +15,7 @@ class Coupon extends Model
         'affiliate_user_id',
         'discount_type',
         'discount_value',
+        'commission_value',
         'valid_from',
         'valid_until'
     ];
