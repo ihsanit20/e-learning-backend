@@ -7,9 +7,13 @@ use App\Models\Coupon;
 
 class CouponController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Coupon::all();
+        return Coupon::query()
+            ->when($request->code_type, function ($query, $code_type) {
+                $query->where('code_type', $code_type);
+            })
+            ->get();
     }
 
     public function store(Request $request)
@@ -22,21 +26,36 @@ class CouponController extends Controller
             'valid_until' => 'required|date',
         ]);
 
-        $coupon = Coupon::create($request->all());
+        $coupon = Coupon::create([
+            'code'              => $request->code,
+            'code_type'         => $request->code_type,
+            'affiliate_user_id' => $request->code_type == 'affiliate' ? $request->affiliate_user_id : null,
+            'discount_type'     => $request->discount_type,
+            'discount_value'    => $request->discount_value,
+            'valid_from'        => $request->valid_from,
+            'valid_until'       => $request->valid_until,
+        ]);
+
         return response()->json($coupon, 201);
     }
 
     public function update(Request $request, Coupon $coupon)
     {
         $request->validate([
-            'code' => 'required|string|unique:coupons,code,' . $coupon->id,
+            // 'code' => 'required|string|unique:coupons,code,' . $coupon->id,
             'discount_type' => 'required|in:percentage,fixed',
             'discount_value' => 'required|integer',
             'valid_from' => 'required|date',
             'valid_until' => 'required|date',
         ]);
 
-        $coupon->update($request->all());
+        $coupon->update([
+            'discount_type'     => $request->discount_type,
+            'discount_value'    => $request->discount_value,
+            'valid_from'        => $request->valid_from,
+            'valid_until'       => $request->valid_until,
+        ]);
+
         return response()->json($coupon);
     }
 
