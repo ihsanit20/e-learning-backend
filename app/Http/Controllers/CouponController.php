@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Coupon;
+use App\Models\Purchase;
 
 class CouponController extends Controller
 {
@@ -12,6 +13,28 @@ class CouponController extends Controller
         return Coupon::query()
             ->when($request->code_type, function ($query, $code_type) {
                 $query->where('code_type', $code_type);
+            })
+            ->get();
+    }
+
+    public function userCoupons(Request $request)
+    {
+        $user = $request->user('sanctum');
+
+        return Coupon::query()
+            ->where('affiliate_user_id', $user->id)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->get();
+    }
+
+    public function userEarnings(Request $request)
+    {
+        // $user = $request->user('sanctum');
+
+        return Purchase::query()
+            ->when($request->code, function ($query, $code) {
+                $query->where('coupon_code', $code);
             })
             ->get();
     }

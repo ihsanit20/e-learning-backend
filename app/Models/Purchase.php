@@ -23,6 +23,17 @@ class Purchase extends Model
         'response' => 'json',
     ];
 
+    protected $appends = [
+        'date',
+    ];
+
+    public function getDateAttribute()
+    {
+        return $this->created_at
+            ? $this->created_at->format('d m Y')
+            : "";
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -68,6 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
+
+    Route::get('/user-coupons', [CouponController::class, 'userCoupons']);
+    Route::get('/user-earnings', [CouponController::class, 'userEarnings']);
     
     Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
     Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
