@@ -14,11 +14,12 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'email',
         'password',
         'phone',
         'photo',
         'role',
+        'affiliate_status',
+        'additional_info',
     ];
 
     protected $hidden = [
@@ -27,7 +28,7 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'additional_info' => 'json',
     ];
 
     protected function photo(): Attribute

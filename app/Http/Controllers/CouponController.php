@@ -33,8 +33,19 @@ class CouponController extends Controller
         // $user = $request->user('sanctum');
 
         return Purchase::query()
+            ->when(!$request->code && !$request->user_id, function ($query) {
+                $query->take(0);
+            })
             ->when($request->code, function ($query, $code) {
                 $query->where('coupon_code', $code);
+            })
+            ->when($request->user_id, function ($query, $user_id) {
+                $coupon_codes = Coupon::query()
+                    ->where('affiliate_user_id', $user_id)
+                    ->pluck('code')
+                    ->toArray();
+
+                $query->whereIn('coupon_code', $coupon_codes);
             })
             ->get();
     }
@@ -92,7 +103,11 @@ class CouponController extends Controller
 
     public function showByCode($code)
     {
-        $coupon = Coupon::where('code', $code)->first();
+        $coupon = Coupon::query()
+            ->where('code', $code)
+            ->where('valid_from', '<=', now())
+            ->where('valid_until', '>=', now())
+            ->first();
 
         if (!$coupon) {
             return response()->json(['message' => 'Coupon not found'], 404);

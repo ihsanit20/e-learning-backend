@@ -58,6 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/user/photo', [UserController::class, 'uploadPhoto']);
 
+    Route::post('/apply-affiliate', [UserController::class, 'applyAffiliate']);
+
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
         

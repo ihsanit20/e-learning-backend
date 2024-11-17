@@ -12,7 +12,6 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'required|string|max:20',
             'photo' => 'nullable|string',
@@ -28,11 +27,11 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'sometimes|string|min:8|confirmed',
             'phone' => 'sometimes|string|max:20',
             'photo' => 'nullable|string',
             'role' => 'required|string|in:developer,admin,instructor,student',
+            'affiliate_status' => 'nullable|in:Pending,Active,Inactive',
         ]);
 
         $user->update($validated);
@@ -43,6 +42,7 @@ class UserController extends Controller
     public function getUsers()
     {
         $users = User::all();
+
         return response()->json($users);
     }
 
@@ -61,5 +61,19 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Photo uploaded successfully', 'path' => $s3Url], 200);
+    }
+
+    public function applyAffiliate(Request $request)
+    {
+        // return $request->additional_info;
+        
+        $user = $request->user();
+
+        $user->update([
+            'affiliate_status'  => 'Pending',
+            'additional_info'   => $request->additional_info,
+        ]);
+
+        return $user;
     }
 }
