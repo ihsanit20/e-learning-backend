@@ -96,7 +96,7 @@ class PaymentController extends Controller
                     if ($coupon) {
                         if ($coupon->discount_type == 'percentage') {
                             $discount = ($course->price * $coupon->discount_value) / 100;
-                            $commission = ($course->price * $coupon->commission_value) / 100;
+                            $commission = (($course->price - $discount) * $coupon->commission_value) / 100;
                         } else {
                             $discount = $coupon->discount_value;
                             $commission = $coupon->commission_value;

@@ -41,7 +41,11 @@ class UserController extends Controller
 
     public function getUsers()
     {
-        $users = User::all();
+        $users = User::query()
+            ->when(request()->affiliate_status, function ($query, $affiliate_status) {
+                $query->where('affiliate_status', $affiliate_status);
+            })
+            ->get();
 
         return response()->json($users);
     }

@@ -33,6 +33,9 @@ class CouponController extends Controller
         // $user = $request->user('sanctum');
 
         return Purchase::query()
+            ->with([
+                'course:id,title',
+            ])
             ->when(!$request->code && !$request->user_id, function ($query) {
                 $query->take(0);
             })
