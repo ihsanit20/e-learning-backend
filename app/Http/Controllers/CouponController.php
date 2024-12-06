@@ -113,7 +113,7 @@ class CouponController extends Controller
             ->first();
 
         if (!$coupon) {
-            return response()->json(['message' => 'Coupon not found'], 404);
+            return response()->noContent();
         }
 
         return response()->json($coupon);
