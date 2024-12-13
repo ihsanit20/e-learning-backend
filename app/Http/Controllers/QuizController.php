@@ -12,7 +12,11 @@ class QuizController extends Controller
     public function index()
     {
         $quizzes = Quiz::query()
-            ->withCount('user_quizzes')
+            ->withCount([
+                'user_quizzes',
+                'questions',
+            ])
+            ->latest()
             ->get();
 
         return response()->json($quizzes);
