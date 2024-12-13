@@ -17,6 +17,7 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\McqOptionController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserCourseExamController;
 
@@ -136,6 +137,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/exams/{exam}/change-question-mark', [ExamController::class, 'changeQuestionMark']);
         Route::get('/exams/{exam}/results', [ExamController::class, 'results']);
         
+        Route::apiResource('quizzes', QuizController::class);
+
         Route::apiResource('subjects', SubjectController::class);
         Route::apiResource('chapters', ChapterController::class);
         Route::apiResource('questions', QuestionController::class);
