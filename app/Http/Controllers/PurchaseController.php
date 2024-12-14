@@ -15,12 +15,22 @@ class PurchaseController extends Controller
     }
 
     public function getAllTransactions()
-    {    
+    {
         try {
-            $purchases = Purchase::with('user', 'course')->get();
+            $purchases = Purchase::query()
+                ->with('user', 'course')
+                ->when(request()->paid, function ($query) {
+                    $query->where('paid_amount', '>', 0);
+                })
+                ->when(request()->free, function ($query) {
+                    $query->where('paid_amount', '<=', 0);
+                })
+                ->get();
+
             return response()->json($purchases);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to retrieve transactions.'], 500);
         }
     }
+    
 }
