@@ -44,6 +44,7 @@ class CourseController extends Controller
     {
         $course->load([
             'modules.lectures',
+            'modules.materials',
             'modules.exams' => function ($query) {
                 $query->withCount('user_exams');
             },
@@ -106,6 +107,7 @@ class CourseController extends Controller
 
         $course->load([
             'modules.lectures',
+            'modules.materials',
             'modules.exams' => function ($query) {
                 $query->withCount('exam_questions');
             },

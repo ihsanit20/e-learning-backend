@@ -14,6 +14,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\McqOptionController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\QuestionController;
@@ -115,6 +116,11 @@ Route::middleware('auth:sanctum')->group(function () {
     
         Route::put('/modules/{module}/lectures/{lecture}', [LectureController::class, 'update']);
         Route::delete('/modules/{module}/lectures/{lecture}', [LectureController::class, 'destroy']);
+    
+        Route::get('/modules/{module}/materials', [MaterialController::class, 'index']);
+        Route::post('/modules/{module}/materials', [MaterialController::class, 'store']);
+        Route::put('/modules/{module}/materials/{material}', [MaterialController::class, 'update']);
+        Route::delete('/modules/{module}/materials/{material}', [MaterialController::class, 'destroy']);
     
         Route::get('/coupons', [CouponController::class, 'index']);
         Route::post('/coupons', [CouponController::class, 'store']);
