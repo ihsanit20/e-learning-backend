@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\Purchase;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Msilabs\Bkash\BkashPayment;
 
@@ -14,13 +15,11 @@ class PaymentController extends Controller
 
     public function payment(Request $request, Course $course)
     {
-        $user = $request->user();
-
-        // return $request;
+        $user = User::find($request->user_id) ?? $request->user();
 
         $discount = 0;
 
-        $params = "";
+        $params = "?user_id=" . $user->id;
 
         if($request->coupon_code) {
             // get discount by code
@@ -33,7 +32,7 @@ class PaymentController extends Controller
                     $discount = $coupon->discount_value;
                 }
                 
-                $params = "?coupon_code=" . $request->coupon_code;
+                $params = "&coupon_code=" . $request->coupon_code;
             }
         }
 
@@ -84,7 +83,7 @@ class PaymentController extends Controller
             $response = $this->executePayment($paymentID);
       
             if($response->transactionStatus == 'Completed') {
-                $user = $request->user();
+                $user = User::find($request->user_id) ?? $request->user();
 
                 if($request->coupon_code) {
                     $coupon = Coupon::query()

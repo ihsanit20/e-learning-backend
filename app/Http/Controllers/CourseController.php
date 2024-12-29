@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseCompletionProgress;
 use App\Models\Purchase;
+use App\Models\User;
 use App\Models\UserExam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -178,5 +179,37 @@ class CourseController extends Controller
         $course->save();
 
         return response()->json(['message' => 'Thumbnail uploaded successfully', 'path' => $s3Url], 200);
+    }
+
+    public function findNotEnrolledUserByPhone(Request $request, Course $course, $phone)
+    {
+        $user = User::query()
+            ->where('phone', "+88{$phone}")
+            ->first();
+            
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found with this phone number.'
+            ], 404);
+        }
+
+        $already_purchased = Purchase::query()
+            ->where([
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+            ])
+            ->exists();
+
+        if ($already_purchased) {
+            return response()->json([
+                'message' => 'This user has already purchased this course.'
+            ], 404);
+        }
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'photo' => $user->photo,
+        ]);
     }
 }

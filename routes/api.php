@@ -43,6 +43,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::get('/courses', [CourseController::class, 'index']);
 Route::get('/courses/latest', [CourseController::class, 'latest']);
+Route::get('/courses/{course}/not-enrolled-user-by-phone/{phone}', [CourseController::class, 'findNotEnrolledUserByPhone']);
 Route::get('/courses/category/{category}', [CourseController::class, 'coursesByCategory']);
 Route::get('/courses/{course}', [CourseController::class, 'show']);
 
