@@ -34,7 +34,7 @@ class PaymentController extends Controller
                     $discount = $coupon->discount_value;
                 }
                 
-                $params = "&coupon_code=" . $request->coupon_code;
+                $params .= "&coupon_code=" . $request->coupon_code;
             }
         }
 
