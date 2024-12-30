@@ -15,7 +15,9 @@ class PaymentController extends Controller
 
     public function payment(Request $request, Course $course)
     {
-        $user = User::find($request->user_id) ?? $request->user();
+        $auth_user = $request->user();
+
+        $user = User::find($request->user_id) ?? $auth_user;
 
         $discount = 0;
 
@@ -45,6 +47,7 @@ class PaymentController extends Controller
         if($payable <= 0) {
             Purchase::create([
                 'user_id'           => $user->id,
+                'auth_id'           => $auth_user->id,
                 'course_id'         => $course->id,
                 'paid_amount'       => 0,
                 'trx_id'            => null,
@@ -55,7 +58,7 @@ class PaymentController extends Controller
 
             return response([
                 'data' => [
-                    'bkashURL' => env('FRONTEND_BASE_URL', 'https://ciademy.com') . '/my/course',
+                    'bkashURL' => env('FRONTEND_BASE_URL', 'https://ciademy.com') . '/checkout/2?message=Course enrolled successfully',
                 ]
             ]);
         }
@@ -83,7 +86,8 @@ class PaymentController extends Controller
             $response = $this->executePayment($paymentID);
       
             if($response->transactionStatus == 'Completed') {
-                $user = User::find($request->user_id) ?? $request->user();
+                $auth_user = $request->user();
+                $user = User::find($request->user_id) ?? $auth_user;
 
                 if($request->coupon_code) {
                     $coupon = Coupon::query()
@@ -105,6 +109,7 @@ class PaymentController extends Controller
 
                 Purchase::create([
                     'user_id'           => $user->id,
+                    'auth_id'           => $auth_user->id,
                     'course_id'         => $course->id,
                     'paid_amount'       => $response->amount,
                     'trx_id'            => $response->trxID,

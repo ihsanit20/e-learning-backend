@@ -11,10 +11,12 @@ class Purchase extends Model
 
     protected $fillable = [
         'user_id',
+        'auth_id',
         'course_id',
         'paid_amount',
         'trx_id',
         'discount_amount',
+        'commission_amount',
         'coupon_code',
         'response',
     ];
