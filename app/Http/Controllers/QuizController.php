@@ -26,6 +26,7 @@ class QuizController extends Controller
     {
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'type' => 'required|in:MCQ,Written',
             'duration' => 'required|integer',
             'opening_time' => 'nullable|date',
@@ -50,6 +51,7 @@ class QuizController extends Controller
     {
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'duration' => 'required|integer',
             'opening_time' => 'nullable|date',
             'result_publish_time' => 'nullable|date',
