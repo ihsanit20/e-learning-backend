@@ -31,7 +31,7 @@ class UserCourseExamController extends Controller
             ])
             ->firstOrFail();
 
-            $questions = $exam->questions()
+        $questions = $exam->questions()
             ->with([
                 'mcq_options:id,question_id,option_text,is_correct',
                 'user_mcq_answer',

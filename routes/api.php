@@ -21,6 +21,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserCourseExamController;
+use App\Http\Controllers\UserQuizController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,9 @@ Route::get('category/{category}', [CategoryController::class, 'show']);
 
 Route::get('/galleries', [GalleryController::class, 'index']);
 
+Route::get('quiz', [UserQuizController::class, 'index']);
+Route::get('quiz/{quiz}', [UserQuizController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/upload-photo', [PhotoController::class, 'upload']);
 
@@ -71,6 +75,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('my-courses/{course}/exams/{exam}', [UserCourseExamController::class, 'fetchExamWithQuestion']);
         Route::post('my-courses/{course}/exams/{exam}', [UserCourseExamController::class, 'submitExamWithQuestion']);
     });
+
+    // user quiz routes
+    Route::post('quiz/{quiz}/submit', [UserQuizController::class, 'submit']);
+    Route::get('quiz/{quiz}/result', [UserQuizController::class, 'result']);
 
     Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
 
