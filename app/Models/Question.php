@@ -9,6 +9,9 @@ class Question extends Model
 {
     use HasFactory;
 
+    static $exam_id = null;
+    static $quiz_id = null;
+
     protected $fillable = ['chapter_id', 'type', 'question_text', 'explanation'];
 
     public function chapter()
@@ -25,7 +28,22 @@ class Question extends Model
     {
         return $this->hasOne(UserMcqAnswer::class)
             ->whereHas('user_exam', function ($query) {
-                $query->where('user_id', auth('sanctum')->id());
+                $query->where('user_id', auth('sanctum')->id())
+                    ->when(self::$exam_id, function ($query, $exam_id) {
+                        $query->where('exam_id', $exam_id);
+                    });
+            })
+            ;
+    }
+
+    public function user_quiz_mcq_answer()
+    {
+        return $this->hasOne(UserQuizMcqAnswer::class)
+            ->whereHas('user_quiz', function ($query) {
+                $query->where('user_id', auth('sanctum')->id())
+                    ->when(self::$quiz_id, function ($query, $quiz_id) {
+                        $query->where('quiz_id', $quiz_id);
+                    });
             })
             ;
     }

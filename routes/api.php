@@ -77,8 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // user quiz routes
-    Route::post('quiz/{quiz}/submit', [UserQuizController::class, 'submit']);
-    Route::get('quiz/{quiz}/result', [UserQuizController::class, 'result']);
+    Route::get('/my-quiz/{quiz}/participation', [UserQuizController::class, 'fetchQuizWithQuestion']);
+    Route::post('/my-quiz/{quiz}/submit', [UserQuizController::class, 'submitQuizWithQuestion']);
 
     Route::get('/coupons/{code}', [CouponController::class, 'showByCode']);
 

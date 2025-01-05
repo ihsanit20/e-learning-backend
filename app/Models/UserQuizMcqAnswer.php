@@ -15,8 +15,8 @@ class UserQuizMcqAnswer extends Model
         'answers' => 'json',
     ];
 
-    public function user_exam()
+    public function user_quiz()
     {
-        return $this->belongsTo(UserExam::class);
+        return $this->belongsTo(UserQuiz::class);
     }
 }

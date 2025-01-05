@@ -28,12 +28,17 @@ class QuizController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:MCQ,Written',
-            'duration' => 'required|integer',
+            'duration' => 'nullable|integer',
             'opening_time' => 'nullable|date',
             'result_publish_time' => 'nullable|date',
         ]);
 
         $quiz = Quiz::create($validated_data);
+
+        $quiz->loadCount([
+            'user_quizzes',
+            'questions',
+        ]);
 
         return response()->json($quiz, 201);
     }
@@ -52,12 +57,17 @@ class QuizController extends Controller
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'duration' => 'required|integer',
+            'duration' => 'nullable|integer',
             'opening_time' => 'nullable|date',
             'result_publish_time' => 'nullable|date',
         ]);
 
         $quiz->update($validated_data);
+
+        $quiz->loadCount([
+            'user_quizzes',
+            'questions',
+        ]);
 
         return response()->json($quiz);
     }

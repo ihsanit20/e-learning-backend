@@ -24,6 +24,8 @@ class UserCourseExamController extends Controller
             ], 403);
         }
 
+        Question::$exam_id = $exam->id;
+
         Module::query()
             ->where([
                 'id' => $exam->module_id,
