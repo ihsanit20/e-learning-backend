@@ -33,6 +33,8 @@ class UserQuizController extends Controller
 
     public function show(Request $request, Quiz $quiz)
     {
+        Quiz::$auth_id = auth('sanctum')->id();
+
         Question::$quiz_id = $quiz->id;
 
         $quiz->loadCount('quiz_questions');
@@ -100,6 +102,8 @@ class UserQuizController extends Controller
 
     public function fetchQuizWithQuestion(Quiz $quiz)
     {
+        Quiz::$auth_id = auth('sanctum')->id();
+
         Question::$quiz_id = $quiz->id;
         
         if (Carbon::now()->lessThan(Carbon::make($quiz->opening_time))) {

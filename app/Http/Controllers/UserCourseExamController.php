@@ -24,6 +24,8 @@ class UserCourseExamController extends Controller
             ], 403);
         }
 
+        Exam::$auth_id = auth('sanctum')->id();
+
         Question::$exam_id = $exam->id;
 
         Module::query()

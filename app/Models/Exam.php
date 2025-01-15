@@ -9,6 +9,8 @@ class Exam extends Model
 {
     use HasFactory;
 
+    static $auth_id = null;
+
     protected $fillable = [
         'module_id',
         'title',
@@ -56,6 +58,6 @@ class Exam extends Model
     public function user_exam()
     {
         return $this->hasOne(UserExam::class)
-            ->where('user_id', auth('sanctum')->id());
+            ->where('user_id', self::$auth_id);
     }
 }

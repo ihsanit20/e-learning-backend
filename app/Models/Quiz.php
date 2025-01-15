@@ -10,6 +10,8 @@ class Quiz extends Model
 {
     use HasFactory;
 
+    static $auth_id = null;
+
     protected $keyType = 'string';
     public $incrementing = false;
     
@@ -62,6 +64,6 @@ class Quiz extends Model
     public function user_quiz()
     {
         return $this->hasOne(UserQuiz::class)
-            ->where('user_id', auth('sanctum')->id());
+            ->where('user_id', self::$auth_id);
     }
 }

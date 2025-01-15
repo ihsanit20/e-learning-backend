@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseCompletionProgress;
+use App\Models\Exam;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Models\UserExam;
@@ -104,6 +105,8 @@ class CourseController extends Controller
 
     public function showPurchasedCourse(Course $course)
     {
+        Exam::$auth_id = auth('sanctum')->id();
+
         $userId = auth('sanctum')->id();
 
         $course->load([
