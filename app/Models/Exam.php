@@ -41,6 +41,18 @@ class Exam extends Model
         return $this->hasMany(UserExam::class);
     }
 
+    public function user_regular_exams()
+    {
+        return $this->hasMany(UserExam::class)
+            ->where('is_practice', 0);
+    }
+
+    public function user_practice_exams()
+    {
+        return $this->hasMany(UserExam::class)
+            ->where('is_practice', 1);
+    }
+
     public function user_exam()
     {
         return $this->hasOne(UserExam::class)

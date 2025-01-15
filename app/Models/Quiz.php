@@ -47,6 +47,18 @@ class Quiz extends Model
         return $this->hasMany(UserQuiz::class);
     }
 
+    public function user_regular_quizzes()
+    {
+        return $this->hasMany(UserQuiz::class)
+            ->where('is_practice', 0);
+    }
+
+    public function user_practice_quizzes()
+    {
+        return $this->hasMany(UserQuiz::class)
+            ->where('is_practice', 1);
+    }
+
     public function user_quiz()
     {
         return $this->hasOne(UserQuiz::class)

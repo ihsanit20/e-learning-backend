@@ -156,6 +156,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/quizzes/{quiz}/select-questions/{question}', [QuizController::class, 'selectQuestion']);
         Route::delete('/quizzes/{quiz}/remove-questions/{question}', [QuizController::class, 'removeQuestion']);
         Route::put('/quizzes/{quiz}/change-question-mark', [QuizController::class, 'changeQuestionMark']);
+        Route::get('/quizzes/{quiz}/results', [QuizController::class, 'results']);
         Route::apiResource('quizzes', QuizController::class);
 
         Route::apiResource('subjects', SubjectController::class);

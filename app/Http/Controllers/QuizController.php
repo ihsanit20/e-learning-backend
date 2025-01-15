@@ -15,6 +15,8 @@ class QuizController extends Controller
             ->withCount([
                 'user_quizzes',
                 'questions',
+                'user_regular_quizzes',
+                'user_practice_quizzes',
             ])
             ->latest()
             ->get();

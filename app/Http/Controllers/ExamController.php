@@ -12,7 +12,11 @@ class ExamController extends Controller
     public function index($module_id)
     {
         $exams = Exam::query()
-            ->withCount('user_exams')
+            ->withCount([
+                'user_exams',
+                'user_regular_exams',
+                'user_practice_exams',
+            ])
             ->where('module_id', $module_id)
             ->get();
 
