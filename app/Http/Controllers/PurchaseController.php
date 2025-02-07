@@ -19,10 +19,10 @@ class PurchaseController extends Controller
         try {
             $purchases = Purchase::query()
                 ->with('user', 'course')
-                ->when(request()->paid, function ($query) {
+                ->when(request()->status == 'paid', function ($query) {
                     $query->where('paid_amount', '>', 0);
                 })
-                ->when(request()->free, function ($query) {
+                ->when(request()->status == 'free', function ($query) {
                     $query->where('paid_amount', '<=', 0);
                 })
                 ->when(request()->has('month'), function ($query) {
