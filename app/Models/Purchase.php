@@ -32,7 +32,7 @@ class Purchase extends Model
     public function getDateAttribute()
     {
         return $this->created_at
-            ? $this->created_at->format('d m Y')
+            ? $this->created_at->format('d-m-Y')
             : "";
     }
 
