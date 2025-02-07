@@ -25,6 +25,13 @@ class PurchaseController extends Controller
                 ->when(request()->free, function ($query) {
                     $query->where('paid_amount', '<=', 0);
                 })
+                ->when(request()->has('month'), function ($query) {
+                    $query->whereMonth('created_at', date('m', strtotime(request()->month)))
+                          ->whereYear('created_at', date('Y', strtotime(request()->month)));
+                })
+                ->when(request()->has('course'), function ($query) {
+                    $query->where('course_id', request()->course);
+                })
                 ->get();
 
             return response()->json($purchases);
