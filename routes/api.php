@@ -14,6 +14,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\McqOptionController;
 use App\Http\Controllers\PhotoController;
@@ -156,6 +157,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('chapters', ChapterController::class);
         Route::apiResource('questions', QuestionController::class);
         Route::apiResource('mcq-options', McqOptionController::class);
+
+        Route::get('/total-income', [FinanceController::class, 'totalIncome']);
     });
 
     Route::middleware(['role:developer,admin,mentor'])->group(function () {});
