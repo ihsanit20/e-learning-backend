@@ -159,6 +159,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('mcq-options', McqOptionController::class);
 
         Route::get('/total-income', [FinanceController::class, 'totalIncome']);
+        Route::get('/month-wise-total-income', [FinanceController::class, 'MonthWiseTotalIncome']);
     });
 
     Route::middleware(['role:developer,admin,mentor'])->group(function () {});

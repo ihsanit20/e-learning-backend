@@ -37,4 +37,21 @@ class FinanceController extends Controller
             'total_income' => $totalIncome
         ]);
     }
+
+    public function MonthWiseTotalIncome()
+    {
+        $totalIncome = Purchase::query()
+            ->selectRaw("SUM(paid_amount) as total_income, DATE_FORMAT(created_at, '%Y-%m') as month")
+            ->groupBy('month')
+            ->latest('month')
+            ->get();
+    
+        return response()->json($totalIncome->map(function ($item) {
+            return [
+                'month' => $item->month,
+                'total_income' => $item->total_income
+            ];
+        }));
+    }
+    
 }
