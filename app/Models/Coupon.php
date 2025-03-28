@@ -11,6 +11,7 @@ class Coupon extends Model
 
     protected $fillable = [
         'code',
+        'course_id',
         'code_type',
         'affiliate_user_id',
         'discount_type',
@@ -19,4 +20,14 @@ class Coupon extends Model
         'valid_from',
         'valid_until'
     ];
+
+    public function isApplicableForCourseId($course_id): bool
+    {
+        return !$this->course_id || $this->course_id == $course_id;
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }

@@ -24,10 +24,13 @@ class PaymentController extends Controller
         $params = "?user_id=" . $user->id;
 
         if($request->coupon_code) {
-            // get discount by code
-            $coupon = Coupon::where('code', $request->coupon_code)->first();
+            $coupon = Coupon::query()
+                ->where('code', $request->coupon_code)
+                ->where('valid_from', '<=', now())
+                ->where('valid_until', '>=', now())
+                ->first();
 
-            if ($coupon) {
+            if ($coupon && $coupon->isApplicableForCourseId($course->id)) {
                 if ($coupon->discount_type == 'percentage') {
                     $discount = ($course->price * $coupon->discount_value) / 100;
                 } else {
@@ -96,7 +99,7 @@ class PaymentController extends Controller
                         ->where('valid_until', '>=', now())
                         ->first();
         
-                    if ($coupon) {
+                    if ($coupon && $coupon->isApplicableForCourseId($course->id)) {
                         if ($coupon->discount_type == 'percentage') {
                             $discount = ($course->price * $coupon->discount_value) / 100;
                             $commission = (($course->price - $discount) * $coupon->commission_value) / 100;

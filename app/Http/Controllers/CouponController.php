@@ -11,9 +11,13 @@ class CouponController extends Controller
     public function index(Request $request)
     {
         return Coupon::query()
+            ->with([
+                'course:id,title'
+            ])
             ->when($request->code_type, function ($query, $code_type) {
                 $query->where('code_type', $code_type);
             })
+            ->latest('id')
             ->get();
     }
 
@@ -65,6 +69,7 @@ class CouponController extends Controller
 
         $coupon = Coupon::create([
             'code'              => $request->code,
+            'course_id'         => $request->course_id ?? null,
             'code_type'         => $request->code_type,
             'affiliate_user_id' => $request->code_type == 'affiliate' ? $request->affiliate_user_id : null,
             'commission_value'  => $request->code_type == 'affiliate' ? $request->commission_value : 0,
@@ -73,6 +78,8 @@ class CouponController extends Controller
             'valid_from'        => $request->valid_from,
             'valid_until'       => $request->valid_until,
         ]);
+
+        $coupon->load('course:id,title');
 
         return response()->json($coupon, 201);
     }
@@ -88,12 +95,15 @@ class CouponController extends Controller
         ]);
 
         $coupon->update([
+            'course_id'         => $request->course_id ?? null,
             'discount_type'     => $request->discount_type,
             'discount_value'    => $request->discount_value,
             'commission_value'  => $coupon->code_type == 'affiliate' ? $request->commission_value : 0,
             'valid_from'        => $request->valid_from,
             'valid_until'       => $request->valid_until,
         ]);
+
+        $coupon->load('course:id,title');
 
         return response()->json($coupon);
     }
@@ -108,11 +118,16 @@ class CouponController extends Controller
     {
         $coupon = Coupon::query()
             ->where('code', $code)
-            ->where('valid_from', '<=', now())
-            ->where('valid_until', '>=', now())
+            ->whereDate('valid_from', '<=', now())
+            ->whereDate('valid_until', '>=', now())
             ->first();
 
-        if (!$coupon) {
+        $requestedCourseId = request()->course_id;
+
+        if (
+            !$coupon ||
+            ($requestedCourseId && !$coupon->isApplicableForCourseId($requestedCourseId))
+        ) {
             return response()->noContent();
         }
 

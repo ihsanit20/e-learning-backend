@@ -20,6 +20,12 @@ class CourseController extends Controller
             ->with([
                 'category',
             ])
+            ->when(request()->fields, function ($query, $fields) {
+                $query->select($fields);
+            })
+            ->when(request()->price === "paid", function ($query) {
+                $query->where("price", ">", 0);
+            })
             ->get();
 
         return response()->json($courses);
