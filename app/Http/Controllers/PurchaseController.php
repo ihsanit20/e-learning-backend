@@ -10,10 +10,25 @@ class PurchaseController extends Controller
 {
     public function getPurchasedCourses(Request $request)
     {
-        $user = $request->user();
-        $courses = $user->courses()->with('modules.lectures')->get();
+        $user = $request->user('sanctum');
+
+        $limit = $request->input('limit');
+        $withRelations = $request->boolean('with', true); // ডিফল্ট true
+    
+        $query = $user->courses();
+    
+        if ($withRelations) {
+            $query->with('modules.lectures');
+        }
+    
+        if ($limit) {
+            $query->limit($limit);
+        }
+    
+        $courses = $query->latest()->get();
+    
         return response()->json($courses);
-    }
+    }    
 
     public function getAllTransactions(Request $request)
     {

@@ -98,9 +98,23 @@ class CourseController extends Controller
 
     public function latest()
     {
-        $courses = Course::orderBy('created_at', 'desc')->take(3)->get();
+        $limit = request()->input('limit', 3);
+        $except = request()->input('except');
+    
+        $query = Course::query()
+            ->latest();
+    
+        if ($except === 'my-courses') {
+            $userPurchasedCourseIds = Purchase::where('user_id', auth('sanctum')->id())
+                ->pluck('course_id');
+    
+            $query->whereNotIn('id', $userPurchasedCourseIds);
+        }
+    
+        $courses = $query->take($limit)->get();
+    
         return response()->json($courses);
-    }
+    }    
 
     public function coursesByCategory($categoryName)
     {
