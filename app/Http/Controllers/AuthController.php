@@ -60,7 +60,7 @@ class AuthController extends Controller
         $credentials['phone'] = $this->formatPhoneNumber($credentials['phone']);
     
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Your phone or password is incorrect'], 401);
+            return response()->json(['message' => 'Your phone or password is incorrect'], 422);
         }
     
         $user = Auth::user();
