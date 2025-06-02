@@ -41,6 +41,7 @@ class CourseController extends Controller
             'start_date' => 'nullable|date',
             'category_id' => 'required',
             'course_type' => 'required|string|in:Live Course,Recorded Course', // Validation for course_type
+            'facebook_group_link' => 'nullable|string|url:http,https|max:255',
         ]);
 
         $course = Course::create($validatedData);
@@ -82,6 +83,7 @@ class CourseController extends Controller
             'start_date' => 'nullable|date',
             'category_id' => 'required',
             'course_type' => 'required|string|in:Live Course,Recorded Course', // Validation for course_type
+            'facebook_group_link' => 'nullable|string|url:http,https|max:255',
         ]);
 
         $course->update($validatedData);

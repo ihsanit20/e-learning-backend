@@ -17,7 +17,8 @@ class Course extends Model
         'price',
         'start_date',
         'category_id',
-        'course_type', // Add the new attribute here
+        'course_type',
+        'facebook_group_link',
     ];
 
     protected $casts = [
