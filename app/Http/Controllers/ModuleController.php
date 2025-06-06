@@ -9,7 +9,11 @@ class ModuleController extends Controller
 {
     public function index($courseId)
     {
-        $modules = Module::where('course_id', $courseId)->get();
+        $modules = Module::query()
+            ->where('course_id', $courseId)
+            ->orderBy('order')
+            ->get();
+
         return response()->json($modules, 200);
     }
 
