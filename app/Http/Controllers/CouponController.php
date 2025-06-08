@@ -118,8 +118,7 @@ class CouponController extends Controller
     {
         $coupon = Coupon::query()
             ->where('code', $code)
-            ->whereDate('valid_from', '<=', now())
-            ->whereDate('valid_until', '>=', now())
+            ->validToday()
             ->first();
 
         $requestedCourseId = request()->course_id;

@@ -26,6 +26,13 @@ class Coupon extends Model
         return !$this->course_id || $this->course_id == $course_id;
     }
 
+    public function scopeValidToday($query)
+    {
+        return $query
+            ->whereDate('valid_from', '<=', now())
+            ->whereDate('valid_until', '>=', now());
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

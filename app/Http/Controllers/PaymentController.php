@@ -26,8 +26,7 @@ class PaymentController extends Controller
         if($request->coupon_code) {
             $coupon = Coupon::query()
                 ->where('code', $request->coupon_code)
-                ->where('valid_from', '<=', now())
-                ->where('valid_until', '>=', now())
+                ->validToday()
                 ->first();
 
             if ($coupon && $coupon->isApplicableForCourseId($course->id)) {
@@ -95,8 +94,7 @@ class PaymentController extends Controller
                 if($request->coupon_code) {
                     $coupon = Coupon::query()
                         ->where('code', $request->coupon_code)
-                        ->where('valid_from', '<=', now())
-                        ->where('valid_until', '>=', now())
+                        ->validToday()
                         ->first();
         
                     if ($coupon && $coupon->isApplicableForCourseId($course->id)) {
