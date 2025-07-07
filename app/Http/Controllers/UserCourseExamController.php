@@ -41,8 +41,16 @@ class UserCourseExamController extends Controller
                 'user_mcq_answer',
             ])
             ->get();
-        
-        $exam->load('user_exam');
+
+        $exam->load([
+            'user_exam' => function ($query) {
+                $query->withCount('user_mcq_answers');
+            },
+        ]);
+
+        $exam->loadCount([
+            'exam_questions',
+        ]);
         
         $has_user_exam = !!$exam->user_exam;
 
