@@ -15,6 +15,15 @@ class UserExam extends Model
         'is_practice' => 'boolean',
     ];
 
+    public function scopeRanked($query)
+    {
+        return $query
+            ->orderByDesc('obtained_mark')
+            ->orderBy('mcq_negative_mark')
+            ->orderBy('created_at')
+            ->orderBy('id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -148,14 +148,10 @@ class ExamController extends Controller
 
     public function results(Exam $exam)
     {
-        $user_exams = $exam->user_exams()
-            ->with([
-                'user:id,name,phone'
-            ])
-            ->latest('obtained_mark')
-            ->where('is_practice', 0)
+        $user_exams = $exam->user_regular_exams()
+            ->with('user:id,name,phone')
+            ->ranked()
             ->paginate();
-            // ->get();
 
         return response()->json(compact(
             'exam',
