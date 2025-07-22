@@ -66,10 +66,26 @@ class UserCourseExamController extends Controller
             $upper_position = $exam->user_exams()
                 ->where('obtained_mark', '>', $exam->user_exam->obtained_mark)
                 ->where('is_practice', 0)
-                ->latest('obtained_mark')
+                ->ranked()
                 ->count();
 
-            $exam->user_exam->position = $upper_position + 1;
+            $position = $upper_position + 1;
+
+            $same_position_user_exams = $exam->user_exams()
+                ->where('obtained_mark', '=', $exam->user_exam->obtained_mark)
+                ->where('is_practice', 0)
+                ->ranked()
+                ->get();
+
+            foreach($same_position_user_exams as $user_exam) {
+                if($exam->user_exam->user_id == $user_exam->user_id) {
+                    break;
+                }
+
+                $position += 1;
+            }
+
+            $exam->user_exam->position = $position;
         }
 
         $exam->has_user_exam = $has_user_exam;
