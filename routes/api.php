@@ -160,6 +160,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/total-income', [FinanceController::class, 'totalIncome']);
         Route::get('/month-wise-total-income', [FinanceController::class, 'MonthWiseTotalIncome']);
+        Route::get('/course-wise-monthly-incomes/{month}', [FinanceController::class, 'CourseWiseMonthlyIncome']);
     });
 
     Route::middleware(['role:developer,admin,mentor'])->group(function () {});

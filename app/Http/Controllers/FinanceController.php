@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Purchase;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FinanceController extends Controller
@@ -53,5 +54,25 @@ class FinanceController extends Controller
             ];
         }));
     }
-    
+
+    public function CourseWiseMonthlyIncome($month)
+    {
+        if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $month)) {
+            return response()->json(['error' => 'Invalid month format. Expected YYYY-MM'], 422);
+        }
+
+        $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth()->toDateString();
+        $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth()->toDateString();
+
+        $courseWisePurchases = Purchase::query()
+            ->join('courses', 'purchases.course_id', '=', 'courses.id')
+            ->selectRaw('courses.id as course_id, courses.title as course_name, SUM(purchases.paid_amount) as total_income')
+            ->whereBetween('purchases.created_at', [$startDate, $endDate])
+            ->groupBy('courses.id', 'courses.title')
+            ->orderByDesc('courses.id')
+            ->get();
+
+        return response()->json($courseWisePurchases);
+    }
+
 }
