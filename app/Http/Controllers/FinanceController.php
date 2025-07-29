@@ -66,7 +66,13 @@ class FinanceController extends Controller
 
         $courseWisePurchases = Purchase::query()
             ->join('courses', 'purchases.course_id', '=', 'courses.id')
-            ->selectRaw('courses.id as course_id, courses.title as course_name, SUM(purchases.paid_amount) as total_income')
+            ->selectRaw('
+                courses.id as course_id,
+                courses.title as course_name,
+                COUNT(purchases.id) as total_purchases,
+                SUM(purchases.paid_amount) as total_income
+            ')
+            ->where('purchases.paid_amount', '>', 0)
             ->whereBetween('purchases.created_at', [$startDate, $endDate])
             ->groupBy('courses.id', 'courses.title')
             ->orderByDesc('courses.id')
