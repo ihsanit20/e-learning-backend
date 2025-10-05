@@ -26,6 +26,8 @@ class CourseController extends Controller
             ->when(request()->price === "paid", function ($query) {
                 $query->where("price", ">", 0);
             })
+            ->when(request()->status == 'active', fn ($query) => $query->active())
+            ->when(request()->status == 'inactive', fn ($query) => $query->active(0))
             ->get();
 
         return response()->json($courses);
@@ -88,6 +90,34 @@ class CourseController extends Controller
 
         $course->update($validatedData);
 
+        $course->load('category');
+
+        return response()->json($course);
+    }
+
+    public function updatePublishStatus(Request $request, Course $course)
+    {
+        $validatedData = $request->validate([
+            'is_published' => 'required|boolean',
+        ]);
+
+        $course->update($validatedData);
+
+        $course->load('category');
+
+        return response()->json($course);
+    }
+
+    public function updateActiveStatus(Request $request, Course $course)
+    {
+        $validatedData = $request->validate([
+            'is_active' => 'required|boolean',
+        ]);
+
+        $course->update($validatedData);
+
+        $course->load('category');
+
         return response()->json($course);
     }
 
@@ -104,6 +134,8 @@ class CourseController extends Controller
         $except = request()->input('except');
     
         $query = Course::query()
+            ->active()
+            ->published()
             ->latest();
     
         if ($except === 'my-courses') {
@@ -120,8 +152,21 @@ class CourseController extends Controller
 
     public function coursesByCategory($categoryName)
     {
-        $category = Category::where('name', $categoryName)->firstOrFail();
-        $courses = Course::where('category_id', $category->id)->get();
+        $limit = request()->input('limit', 3);
+
+        $category = Category::query()
+            ->where('name', $categoryName)
+            ->firstOrFail();
+
+        $courses = Course::query()
+            ->active()
+            ->published()
+            ->where('category_id', $category->id)
+            ->when($limit, function ($query, $limit) {
+                $query->limit($limit);
+            })
+            ->get();
+
         return response()->json($courses);
     }
 

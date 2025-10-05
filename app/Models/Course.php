@@ -19,11 +19,25 @@ class Course extends Model
         'category_id',
         'course_type',
         'facebook_group_link',
+        'is_published',
+        'is_active',
     ];
 
     protected $casts = [
         'price' => 'int',
+        'is_published' => 'bool',
+        'is_active' => 'bool',
     ];
+
+    public function scopeActive($query, $is_active = true)
+    {
+        return $query->where('is_active', $is_active);
+    }
+
+    public function scopePublished($query, $is_published = true)
+    {
+        return $query->where('is_published', $is_published);
+    }
 
     protected function thumbnail(): Attribute
     {

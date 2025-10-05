@@ -16,6 +16,12 @@ class PurchaseController extends Controller
         $withRelations = $request->boolean('with', true); // ডিফল্ট true
     
         $query = $user->courses();
+
+        if ($request->status == 'active') {
+            $query->active();
+        } elseif ($request->status == 'inactive') {
+            $query->active(0);
+        }
     
         if ($withRelations) {
             $query->with('modules.lectures');

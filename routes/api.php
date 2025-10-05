@@ -100,6 +100,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/courses', [CourseController::class, 'store']);
         Route::put('/courses/{course}', [CourseController::class, 'update']);
+        Route::patch('/courses/{course}/update-publish-status', [CourseController::class, 'updatePublishStatus']);
+        Route::patch('/courses/{course}/update-active-status', [CourseController::class, 'updateActiveStatus']);
         Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
         Route::post('/courses/{course}/thumbnail', [CourseController::class, 'uploadThumbnail']);
 
