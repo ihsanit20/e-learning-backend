@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fda2c372932d7c757e9413508dae8e51",
+    "content-hash": "9f73fe524de08f77486d38192db7751c",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2201,21 +2201,21 @@
         },
         {
             "name": "msilabs/bkash",
-            "version": "v1.0.7",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/msilabs/bkash.git",
-                "reference": "a6bab035ca322345e152a44656e5f005ebe76f7e"
+                "reference": "7164ef00903098662e7c332e633030f209cac1ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/msilabs/bkash/zipball/a6bab035ca322345e152a44656e5f005ebe76f7e",
-                "reference": "a6bab035ca322345e152a44656e5f005ebe76f7e",
+                "url": "https://api.github.com/repos/msilabs/bkash/zipball/7164ef00903098662e7c332e633030f209cac1ba",
+                "reference": "7164ef00903098662e7c332e633030f209cac1ba",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^6|^7|^8|^9|^10",
-                "php": "^7.4|^8.0|^8.1|^8.2"
+                "illuminate/support": "^6|^7|^8|^9|^10|^11|^12",
+                "php": "^7.4|^8.0|^8.1|^8.2|^8.3"
             },
             "type": "library",
             "extra": {
@@ -2252,7 +2252,7 @@
                 "issues": "https://github.com/msilabs/bkash/issues",
                 "source": "https://github.com/msilabs/bkash"
             },
-            "time": "2025-06-08T17:50:22+00:00"
+            "time": "2025-09-23T08:29:29+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
