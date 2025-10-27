@@ -28,6 +28,8 @@ class CourseController extends Controller
             })
             ->when(request()->status == 'active', fn ($query) => $query->active())
             ->when(request()->status == 'inactive', fn ($query) => $query->active(0))
+            ->when(request()->publish == 'published', fn ($query) => $query->published())
+            ->when(request()->publish == 'unpublished', fn ($query) => $query->published(0))
             ->get();
 
         return response()->json($courses);

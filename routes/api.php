@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BundleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CouponController;
@@ -48,6 +49,9 @@ Route::get('/courses/latest', [CourseController::class, 'latest']);
 Route::get('/courses/{course}/not-enrolled-user-by-phone/{phone}', [CourseController::class, 'findNotEnrolledUserByPhone']);
 Route::get('/courses/category/{category}', [CourseController::class, 'coursesByCategory']);
 Route::get('/courses/{course}', [CourseController::class, 'show']);
+
+Route::get('/bundles', [BundleController::class, 'index']);
+Route::get('/bundles/{bundle}', [BundleController::class, 'show']);
 
 Route::get('/category-list', [CategoryController::class, 'index']);
 Route::get('category/{category}', [CategoryController::class, 'show']);
@@ -104,6 +108,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/courses/{course}/update-active-status', [CourseController::class, 'updateActiveStatus']);
         Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
         Route::post('/courses/{course}/thumbnail', [CourseController::class, 'uploadThumbnail']);
+
+        Route::post('/bundles', [BundleController::class, 'store']);
+        Route::put('/bundles/{bundle}', [BundleController::class, 'update']);
+        Route::patch('/bundles/{bundle}/update-active-status', [BundleController::class, 'updateActiveStatus']);
+        Route::delete('/bundles/{bundle}', [BundleController::class, 'destroy']);
+        Route::post('/bundles/{bundle}/thumbnail', [BundleController::class, 'uploadThumbnail']);
 
         Route::apiResource('category', CategoryController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 
