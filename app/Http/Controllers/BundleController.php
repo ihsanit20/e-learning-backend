@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Storage;
 
 class BundleController extends Controller
 {
+    const WITH = [
+        'bundleCourses:id,bundle_id,course_id,course_price',
+        'bundleCourses.course:id,title,price',
+    ];
+
     public function index()
     {
         $bundles = Bundle::query()
-            ->with([
-                'bundleCourses.course',
-            ])
+            ->with(self::WITH)
             ->get();
 
         return response()->json($bundles);
@@ -24,21 +27,20 @@ class BundleController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'thumbnail' => 'nullable|string',
         ]);
 
         $bundle = Bundle::create($validatedData);
 
-        $bundle->load('bundleCourses.course');
+        $this->saveBundleCourses($bundle, $request);
+
+        $bundle->load(self::WITH);
 
         return response()->json($bundle, 201);
     }
 
     public function show(Bundle $bundle)
     {
-        $bundle->load([
-            'bundleCourses.course',
-        ]);
+        $bundle->load(self::WITH);
 
         return response()->json($bundle);
     }
@@ -48,12 +50,13 @@ class BundleController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'thumbnail' => 'nullable|string',
         ]);
 
         $bundle->update($validatedData);
 
-        $bundle->load('bundleCourses.course');
+        $this->saveBundleCourses($bundle, $request);
+
+        $bundle->load(self::WITH);
 
         return response()->json($bundle);
     }
@@ -66,7 +69,7 @@ class BundleController extends Controller
 
         $bundle->update($validatedData);
 
-        $bundle->load('bundleCourses.course');
+        $bundle->load(self::WITH);
 
         return response()->json($bundle);
     }
@@ -94,5 +97,25 @@ class BundleController extends Controller
         $bundle->save();
 
         return response()->json(['message' => 'Thumbnail uploaded successfully', 'path' => $s3Url], 200);
+    }
+
+    protected function saveBundleCourses($bundle, $request)
+    {
+        if ($request->has('bundle_courses')) {
+            $request->validate([
+                'bundle_courses' => 'array',
+                'bundle_courses.*.course_id' => 'required|exists:courses,id',
+                'bundle_courses.*.course_price' => 'required|numeric|min:0',
+            ]);
+
+            $bundle->bundleCourses()->delete();
+
+            foreach ($request->bundle_courses as $bundle_course) {
+                $bundle->bundleCourses()->create([
+                    'course_id' => $bundle_course['course_id'],
+                    'course_price' => $bundle_course['course_price'],
+                ]);
+            }
+        }
     }
 }

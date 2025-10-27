@@ -10,6 +10,10 @@ class Bundle extends Model
     use HasFactory;
 
     protected $guarded = [];
+    
+    protected $casts = [
+        'is_active' => 'bool',
+    ];
 
     public function bundleCourses()
     {

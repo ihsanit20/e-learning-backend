@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('bundle_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
-            $table->decimal('bundle_offer_price', 10, 2)->default(0);
+            $table->decimal('course_price', 10, 2)->default(0);
             $table->timestamps();
         });
     }

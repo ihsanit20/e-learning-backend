@@ -11,6 +11,10 @@ class BundleCourse extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'course_price' => 'int',
+    ];
+
     public function bundle()
     {
         return $this->belongsTo(Bundle::class);
