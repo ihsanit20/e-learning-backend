@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bundles', function (Blueprint $table) {
+            $table->engine = 'MyISAM';
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();

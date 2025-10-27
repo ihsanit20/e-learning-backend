@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bundle_courses', function (Blueprint $table) {
+            $table->engine = 'MyISAM';
             $table->id();
             $table->foreignId('bundle_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
