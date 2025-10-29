@@ -63,6 +63,8 @@ class CourseController extends Controller
             },
         ]);
 
+        $course->loadCount('bundleCourses');
+
         $course->is_purchased = false;
 
         if($user = Request()->user('sanctum')) {

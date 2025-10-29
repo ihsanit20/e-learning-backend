@@ -66,4 +66,9 @@ class Course extends Model
     {
         return $this->hasMany(Purchase::class);
     }
+
+    public function bundleCourses()
+    {
+        return $this->hasMany(BundleCourse::class);
+    }
 }

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BundleController;
+use App\Http\Controllers\BundlePaymentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CouponController;
@@ -91,6 +92,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('courses/{course}/payment', [PaymentController::class, 'payment']);
     Route::post('courses/{course}/enroll', [PaymentController::class, 'enroll']);
+
+    Route::post('bundles/{bundle}/payment', [BundlePaymentController::class, 'payment']);
+    Route::post('bundles/{bundle}/enroll', [BundlePaymentController::class, 'enroll']);
 
     Route::get('/user/courses', [PurchaseController::class, 'getPurchasedCourses']);
 

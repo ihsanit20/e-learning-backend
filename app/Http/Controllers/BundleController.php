@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bundle;
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,9 +39,17 @@ class BundleController extends Controller
         return response()->json($bundle, 201);
     }
 
-    public function show(Bundle $bundle)
+    public function show(Request $request, Bundle $bundle)
     {
         $bundle->load(self::WITH);
+
+        $authUser = $request->user('sanctum');
+
+        $bundle->purchased_course_ids = $authUser
+            ? $authUser->courses()
+                ->whereIn('course_id', $bundle->bundleCourses->pluck('course_id'))
+                ->pluck('course_id')
+            : [];
 
         return response()->json($bundle);
     }
