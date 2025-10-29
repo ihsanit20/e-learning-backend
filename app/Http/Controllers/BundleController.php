@@ -18,6 +18,9 @@ class BundleController extends Controller
     {
         $bundles = Bundle::query()
             ->with(self::WITH)
+            ->when(request()->limit, function ($query, $limit) {
+                $query->limit((int) $limit);
+            })
             ->get();
 
         return response()->json($bundles);
