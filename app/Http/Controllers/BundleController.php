@@ -11,7 +11,7 @@ class BundleController extends Controller
 {
     const WITH = [
         'bundleCourses:id,bundle_id,course_id,course_price',
-        'bundleCourses.course:id,title,price',
+        'bundleCourses.course:id,title,price,category_id',
     ];
 
     public function index()
@@ -21,7 +21,12 @@ class BundleController extends Controller
             ->when(request()->limit, function ($query, $limit) {
                 $query->limit((int) $limit);
             })
-            ->get();
+            ->get([
+                'id',
+                'title',
+                'thumbnail',
+                'is_active',
+            ]);
 
         return response()->json($bundles);
     }
