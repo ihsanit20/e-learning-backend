@@ -53,6 +53,7 @@ Route::get('/courses/{course}', [CourseController::class, 'show']);
 
 Route::get('/bundles', [BundleController::class, 'index']);
 Route::get('/bundles/{bundle}', [BundleController::class, 'show']);
+Route::get('/bundles/{bundle}/not-enrolled-user-by-phone/{phone}', [BundlePaymentController::class, 'findNotEnrolledUserByPhone']);
 
 Route::get('/category-list', [CategoryController::class, 'index']);
 Route::get('category/{category}', [CategoryController::class, 'show']);

@@ -12,6 +12,38 @@ class BundlePaymentController extends Controller
 {
     use BkashPayment;
 
+    public function findNotEnrolledUserByPhone(Request $request, Bundle $bundle, $phone)
+    {
+        $user = User::query()
+            ->whereIn('phone', ["+88{$phone}", $phone])
+            ->first();
+            
+        if (!$user) {
+            return response()->json([
+                'message' => "User not found with this phone number: {$phone}"
+            ], 404);
+        }
+
+        $courseIds = $bundle->bundleCourses()->pluck('course_id');
+
+        $already_purchased = Purchase::query()
+            ->where('user_id', $user->id)
+            ->whereIn('course_id', $courseIds)
+            ->exists();
+
+        if ($already_purchased) {
+            return response()->json([
+                'message' => 'This user has already purchased one or more courses from this bundle.'
+            ], 404);
+        }
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'photo' => $user->photo,
+        ]);
+    }
+
     public function payment(Request $request, Bundle $bundle)
     {
         $user = User::find($request->user_id) ?? $request->user();
