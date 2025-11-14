@@ -71,4 +71,51 @@ class PurchaseController extends Controller
             return response()->json(['error' => 'Failed to retrieve transactions.', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function changeCourse(Request $request, Purchase $purchase)
+    {
+        try {
+            // Validate input
+            $validated = $request->validate([
+                'course_id' => 'required|integer|exists:courses,id'
+            ]);
+
+            // Check if course is different from current course
+            if ($purchase->course_id == $validated['course_id']) {
+                return response()->json([
+                    'message' => 'Please select a different course',
+                    'errors' => [
+                        'course_id' => ['The new course must be different from the current course']
+                    ]
+                ], 422);
+            }
+
+            // Store old course for audit
+            $oldCourseId = $purchase->course_id;
+
+            // Update purchase with new course
+            $purchase->update(['course_id' => $validated['course_id']]);
+
+            // Clear cache for transactions
+            Cache::flush();
+
+            // Load relationships
+            $purchase->load('user', 'course');
+
+            return response()->json([
+                'message' => 'Course changed successfully',
+                'data' => $purchase
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Invalid course ID',
+                'errors' => $e->errors()
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to change course',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

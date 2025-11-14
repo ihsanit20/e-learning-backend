@@ -148,6 +148,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
 
         Route::get('/transactions', [PurchaseController::class, 'getAllTransactions']);
+        Route::post('/transactions/{purchase}/change-course', [PurchaseController::class, 'changeCourse']);
 
         Route::post('/galleries', [GalleryController::class, 'uploadPhoto']);
         Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
