@@ -11,6 +11,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\ModuleFolderController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PaymentController;
@@ -128,6 +129,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/courses/{course}/modules', [ModuleController::class, 'index']);
         Route::apiResource('modules', ModuleController::class)->only(['store', 'show', 'update', 'destroy']);
+
+        Route::patch('/modules/{module}/assign-folder', [ModuleController::class, 'assignModuleFolder']);
+        
+        Route::get('/courses/{course}/module-folders', [ModuleFolderController::class, 'index']);
+        Route::apiResource('module-folders', ModuleFolderController::class)->only(['store', 'show', 'update', 'destroy']);
 
         Route::get('/modules/{module}/lectures', [LectureController::class, 'index']);
         Route::post('/modules/{module}/lectures', [LectureController::class, 'store']);

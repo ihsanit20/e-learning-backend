@@ -16,6 +16,7 @@ class Module extends Model
 
     protected $fillable = [
         'course_id',
+        'module_folder_id',
         'title',
         'description',
         'order',
@@ -48,5 +49,10 @@ class Module extends Model
     public function materials()
     {
         return $this->hasMany(Material::class);
+    }
+
+    public function folder()
+    {
+        return $this->belongsTo(ModuleFolder::class, 'module_folder_id');
     }
 }

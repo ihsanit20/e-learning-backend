@@ -11,6 +11,7 @@ class ModuleController extends Controller
     {
         $modules = Module::query()
             ->where('course_id', $courseId)
+            ->with('folder')
             ->orderBy('order')
             ->get();
 
@@ -21,6 +22,7 @@ class ModuleController extends Controller
     {
         $validated = $request->validate([
             'course_id' => 'required|exists:courses,id',
+            'module_folder_id' => 'nullable|exists:module_folders,id',
             'title' => 'required|string',
             'description' => 'nullable|string',
             'order' => 'nullable|integer',
@@ -31,18 +33,19 @@ class ModuleController extends Controller
         ]);
 
         $module = Module::create($validated);
-        
-        return response()->json($module, 201);
+
+        return response()->json($module->load('folder'), 201);
     }
 
     public function show($id)
     {
-        return Module::with('course', 'prerequisite')->findOrFail($id);
+        return Module::with('course', 'prerequisite', 'folder')->findOrFail($id);
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
+            'module_folder_id' => 'nullable|exists:module_folders,id',
             'title' => 'required|string',
             'description' => 'nullable|string',
             'order' => 'nullable|integer',
@@ -54,12 +57,23 @@ class ModuleController extends Controller
 
         $module = Module::findOrFail($id);
         $module->update($validated);
-        return response()->json($module, 200);
+        return response()->json($module->load('folder'), 200);
     }
 
     public function destroy($id)
     {
         Module::findOrFail($id)->delete();
         return response()->json(null, 204);
+    }
+
+    public function assignModuleFolder(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'module_folder_id' => 'nullable|exists:module_folders,id',
+        ]);
+
+        $module = Module::findOrFail($id);
+        $module->update($validated);
+        return response()->json($module->load('folder'), 200);
     }
 }

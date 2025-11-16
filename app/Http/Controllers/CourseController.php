@@ -189,6 +189,7 @@ class CourseController extends Controller
             'modules.exams.user_exam' => function ($query) {
                 $query->withCount('user_mcq_answers');
             },
+            'modules.folder',
         ]);  
 
         // Get all lecture and exam IDs
